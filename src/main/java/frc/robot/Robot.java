@@ -56,12 +56,16 @@ public class Robot extends TimedRobot {
   StopMotorCommand stopCom = new StopMotorCommand(stopSub);
   DigitalInput coolSensor = new DigitalInput(6);
 
+
   @Override
   public void teleopPeriodic() {
+    System.out.println("Your code sucks");
     if (coolSensor.get()) {
       CommandScheduler.getInstance().schedule(startCom);
+      System.out.println("Your code is kinda sketchy");
     } else {
       CommandScheduler.getInstance().schedule(stopCom);
+      System.out.println("Your code is kinda sketchy");
     }
   }
 

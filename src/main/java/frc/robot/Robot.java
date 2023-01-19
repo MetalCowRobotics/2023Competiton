@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import com.ctre.phoenix.motorcontrol.can.*;
+import com.ctre.phoenix.motorcontrol.*;
+import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -40,13 +43,22 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
+
+   TalonSRX m_talon12 = new TalonSRX(12);
+   TalonSRX m_talon7 = new TalonSRX(7);
+   TalonSRX m_talon9 = new TalonSRX(9);
+   TalonSRX m_talon10 = new TalonSRX(10);
+   XboxController m_Xbox = new XboxController(0);
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+
+    // CommandScheduler.getInstance().run();
+    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -89,7 +101,13 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+
+    // CommandScheduler.getInstance().cancelAll();
+    
+    m_talon12.set(ControlMode.PercentOutput, -(m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
+    m_talon7.set(ControlMode.PercentOutput, -(m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
+    m_talon9.set(ControlMode.PercentOutput, (m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
+    m_talon10.set(ControlMode.PercentOutput, (m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
   }
 
   /** This function is called periodically during test mode. */

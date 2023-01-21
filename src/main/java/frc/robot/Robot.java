@@ -59,13 +59,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    System.out.println("Your code sucks");
+    System.out.println(coolSensor.get());
     if (coolSensor.get()) {
       CommandScheduler.getInstance().schedule(startCom);
-      System.out.println("Your code is kinda sketchy");
     } else {
       CommandScheduler.getInstance().schedule(stopCom);
-      System.out.println("Your code is kinda sketchy");
     }
   }
 

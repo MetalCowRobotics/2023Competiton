@@ -15,6 +15,7 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
     public static final XboxController driverControls = new XboxController(0);
+    public static final XboxController operatorControls = new XboxController(1);
 
     public static final class Swerve {
         public static final int pigeonID = 14;
@@ -154,6 +155,6 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int INTAKE_MOTOR = 13;
         public static final double INTAKE_SPEED = 0.3;
-        public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(driverControls, XboxController.Button.kB.value);
+        public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kB.value);
     }
 }

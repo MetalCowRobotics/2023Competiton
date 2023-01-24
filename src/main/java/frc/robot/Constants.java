@@ -152,8 +152,8 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int INTAKE_MOTOR = 15;
-        public static final double INTAKE_SPEED = 0.6;
+        public static final int INTAKE_MOTOR = 13;
+        public static final double INTAKE_SPEED = 0.3;
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(driverControls, XboxController.Button.kB.value);
     }
 }

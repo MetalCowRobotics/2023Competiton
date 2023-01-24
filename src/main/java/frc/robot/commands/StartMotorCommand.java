@@ -17,12 +17,13 @@ public class StartMotorCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    System.out.println(1);
   }
 
   @Override
-  public void execute(){
-      System.out.println("Your code is good-ish");
-      m_StartMotorSubsystem.startMotor();
+  public void execute() {
+    System.out.println("Your code is good-ish");
+    m_StartMotorSubsystem.startMotor();
   }
 
   @Override

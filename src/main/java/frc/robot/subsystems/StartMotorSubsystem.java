@@ -5,16 +5,17 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 
 public class StartMotorSubsystem extends SubsystemBase{
-    private TalonSRX m_coolMotor = new TalonSRX(15);
+    private TalonSRX m_coolMotor = new TalonSRX(16);
 
 
-    public void startMotor(){
+    public void startMotor() {
         m_coolMotor.set(TalonSRXControlMode.PercentOutput, 0.3);
     }
 
     @Override
     public void periodic() {
 // This method will be called once per scheduler run
+        
     }
 
         

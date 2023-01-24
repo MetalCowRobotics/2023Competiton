@@ -5,10 +5,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 
 public class StopMotorSubsystem extends SubsystemBase{
-    private TalonSRX m_coolMotor = new TalonSRX(15);
+    private TalonSRX m_coolMotor = new TalonSRX(16);
 
 
-    public void stopMotor(){
+    public void stopMotor() {
         m_coolMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
     }
 

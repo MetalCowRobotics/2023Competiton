@@ -17,12 +17,13 @@ public class StopMotorCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    System.out.println(2);
   }
 
   @Override
-  public void execute(){
-      System.out.println("Your code is good-ish");
-      m_StopMotorSubsystem.stopMotor();
+  public void execute() {
+    System.out.println("Your code is good-ish");
+    m_StopMotorSubsystem.stopMotor();
   }
 
   @Override

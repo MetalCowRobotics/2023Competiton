@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
   }
 
   @Override
@@ -49,21 +50,22 @@ public class Robot extends TimedRobot {
     // m_robotContainer.startTeleop();
   }
 
- // motor.set(TalonSRXControlMode.PercentOutput, 0.5);
+  // motor.set(TalonSRXControlMode.PercentOutput, 0.5);
   StartMotorSubsystem startSub = new StartMotorSubsystem();
   StartMotorCommand startCom = new StartMotorCommand(startSub);
   StopMotorSubsystem stopSub = new StopMotorSubsystem();
   StopMotorCommand stopCom = new StopMotorCommand(stopSub);
-  DigitalInput coolSensor = new DigitalInput(6);
+  DigitalInput coolSensor = new DigitalInput(9);
+
 
 
   @Override
   public void teleopPeriodic() {
     System.out.println(coolSensor.get());
     if (coolSensor.get()) {
-      CommandScheduler.getInstance().schedule(startCom);
+      (CommandScheduler.getInstance()).schedule(startCom);
     } else {
-      CommandScheduler.getInstance().schedule(stopCom);
+      (CommandScheduler.getInstance()).schedule(stopCom);
     }
   }
 

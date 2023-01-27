@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -15,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+  private static final TalonSRXControlMode TalonSRXControlMode = null;
+
   public static CTREConfigs ctreConfigs;
 
   private Command m_autonomousCommand;
@@ -30,7 +37,7 @@ public class Robot extends TimedRobot {
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    //m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -83,8 +90,7 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {}
+
 
   @Override
   public void testInit() {
@@ -93,6 +99,38 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during test mode. */
+  
+DigitalInput input = new DigitalInput(9);
+// DigitalInput num = new DigitalInput(8)
+
+XboxController xbox = new XboxController(0);
+TalonSRX motor = new TalonSRX(16);
+TalonSRX motor2 = new TalonSRX(15);
+  /** This function is called periodically during operator control. */
   @Override
-  public void testPeriodic() {}
+  public void teleopPeriodic() {
+    //System.out.println(analog);
+    if (xbox.getRawButtonPressed( 1)) {
+      motor.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
+      motor2.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
+    
+  }
+    if (xbox.getRawButtonReleased(1) || (input.get() == false)) {
+      motor.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0.50);
+      motor2.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0.50);  
+
+    }
+    // if (input.get()) {
+    //   
+    // }
+    // else {
+    //   System.out.println("BYE");
+    //     motor.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
+    //     motor2.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
+
+      
+    
+
+  }
 }
+

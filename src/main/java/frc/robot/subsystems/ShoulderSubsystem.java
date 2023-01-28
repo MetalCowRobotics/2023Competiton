@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 
 public class ShoulderSubsystem extends SubsystemBase{
     AnalogPotentiometer pot = new AnalogPotentiometer(0, 180, 30);

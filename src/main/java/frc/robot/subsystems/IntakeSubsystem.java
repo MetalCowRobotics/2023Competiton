@@ -25,6 +25,10 @@ public class IntakeSubsystem extends SubsystemBase {
         motorSpeed = IntakeConstants.INTAKE_SPEED;
     }
 
+    public void runReverse() {
+        motorSpeed = -(IntakeConstants.INTAKE_SPEED);
+    }
+
     public void stop(){
         motorSpeed = 0;
     }

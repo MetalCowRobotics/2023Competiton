@@ -110,7 +110,7 @@ TalonSRX motor2 = new TalonSRX(15);
   @Override
   public void teleopPeriodic() {
     //System.out.println(analog);
-    if (xbox.getRawButtonPressed( 1)) {
+    if (xbox.getRawButtonPressed( 1) || (input.get() == false)) {
       motor.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
       motor2.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
     

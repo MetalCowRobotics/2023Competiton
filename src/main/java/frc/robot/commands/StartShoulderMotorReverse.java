@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShoulderSubsystem;
 
 
-public class StopShoulderMotorCommand extends CommandBase {
+public class StartShoulderMotorReverse extends CommandBase {
   // The subsystem the command runs on
   private final ShoulderSubsystem m_ShoulderSubsystem;
 
-  public StopShoulderMotorCommand(ShoulderSubsystem subsystem) {
+  public StartShoulderMotorReverse(ShoulderSubsystem subsystem) {
     m_ShoulderSubsystem = subsystem;
     addRequirements(m_ShoulderSubsystem);
   }
@@ -19,7 +19,7 @@ public class StopShoulderMotorCommand extends CommandBase {
 
   @Override
   public void execute() {
-    m_ShoulderSubsystem.stopMotor();
+    m_ShoulderSubsystem.startMotorReverse();
   }
 
   @Override

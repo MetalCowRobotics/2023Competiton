@@ -28,6 +28,6 @@ public class StopMotorCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

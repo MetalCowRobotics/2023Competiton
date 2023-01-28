@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 
-import frc.robot.subsystems.StartMotorSubsystem;
+import frc.robot.subsystems.MotorSubsystem;
 import frc.robot.commands.StartMotorCommand;
-import frc.robot.subsystems.StopMotorSubsystem;
 import frc.robot.commands.StopMotorCommand;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -52,10 +51,9 @@ public class Robot extends TimedRobot {
   }
 
   // motor.set(TalonSRXControlMode.PercentOutput, 0.5);
-  StartMotorSubsystem startSub = new StartMotorSubsystem();
-  StartMotorCommand startCom = new StartMotorCommand(startSub);
-  StopMotorSubsystem stopSub = new StopMotorSubsystem();
-  StopMotorCommand stopCom = new StopMotorCommand(stopSub);
+  MotorSubsystem motorSub = new MotorSubsystem();
+  StartMotorCommand stopCom = new StartMotorCommand(motorSub);
+  StopMotorCommand startCom = new StopMotorCommand(motorSub);
   DigitalInput coolSensor = new DigitalInput(9);
 
 

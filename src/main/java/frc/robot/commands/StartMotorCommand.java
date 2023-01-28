@@ -3,27 +3,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.StartMotorSubsystem;
+import frc.robot.subsystems.MotorSubsystem;
 
 
 public class StartMotorCommand extends CommandBase {
   // The subsystem the command runs on
-  private final StartMotorSubsystem m_StartMotorSubsystem;
+  private final MotorSubsystem m_MotorSubsystem;
 
-  public StartMotorCommand(StartMotorSubsystem subsystem) {
-    m_StartMotorSubsystem = subsystem;
-    addRequirements(m_StartMotorSubsystem);
+  public StartMotorCommand(MotorSubsystem subsystem) {
+    m_MotorSubsystem = subsystem;
+    addRequirements(m_MotorSubsystem);
   }
 
   @Override
   public void initialize() {
-    System.out.println(1);
   }
 
   @Override
   public void execute() {
-    System.out.println("Your code is good-ish");
-    m_StartMotorSubsystem.startMotor();
+    m_MotorSubsystem.startMotor();
   }
 
   @Override

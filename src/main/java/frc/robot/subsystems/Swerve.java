@@ -115,7 +115,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        gyro.setYaw(10);
+        gyro.setYaw(0);
     }
 
     public Rotation2d getYaw() {
@@ -132,7 +132,7 @@ public class Swerve extends SubsystemBase {
             Transform3d targetPose = target.getBestCameraToTarget();
             Translation2d xyPosition = new Translation2d(targetPose.getX(), targetPose.getY());
 
-            double yaw = getYaw().getDegrees() + 180;
+            double yaw = getYaw().getDegrees();
             yaw = yaw % 360;
             if (yaw < 0) {
                 yaw += 360;
@@ -145,7 +145,7 @@ public class Swerve extends SubsystemBase {
             } else if (yaw <= 270) {
                 correctionAngle = 270 - yaw;
             } else if (yaw <= 360) {
-                correctionAngle = 360 - yaw;
+                correctionAngle = 360 - yaw + 90;
             }
 
             Rotation2d correction = Rotation2d.fromDegrees(-correctionAngle);

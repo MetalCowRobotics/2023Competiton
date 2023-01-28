@@ -87,16 +87,16 @@ public class TeleopSwerve extends CommandBase {
             );
         } else {
             if (moveToCenter.getAsBoolean()) {
-                targetX = 0.89;
+                targetX = -0.7;
                 targetY = 0.00;
             }
             if (moveToRight.getAsBoolean()) {
-                targetX = 0.78;
-                targetY = 0.0;
+                targetX = -0.7;
+                targetY = -0.6;
             }
             if (moveToLeft.getAsBoolean()) {
-                targetX = 0.78;
-                targetY = 0.0;
+                targetX = -0.7;
+                targetY = 0.6;
                 // System.out.println("MOVING LEFT");
             }
 

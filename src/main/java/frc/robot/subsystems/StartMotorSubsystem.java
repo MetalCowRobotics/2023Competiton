@@ -1,15 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class StartMotorSubsystem extends SubsystemBase{
-    private TalonSRX m_coolMotor = new TalonSRX(16);
+    private CANSparkMax m_coolMotor = new CANSparkMax(13, MotorType.kBrushless);
 
 
     public void startMotor() {
-        m_coolMotor.set(TalonSRXControlMode.PercentOutput, 0.3);
+        m_coolMotor.set(0.3);
     }
 
     @Override

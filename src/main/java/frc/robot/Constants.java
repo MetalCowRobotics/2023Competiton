@@ -7,11 +7,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
+    public static final XboxController driverControls = new XboxController(0);
+    public static final XboxController operatorControls = new XboxController(1);
 
     public static final class Swerve {
         public static final int pigeonID = 14;
@@ -25,6 +29,7 @@ public final class Constants {
         public static final double trackWidth = Units.inchesToMeters(21.25); //TODO: This must be tuned to specific robot
         public static final double wheelBase = Units.inchesToMeters(21.25); //TODO: This must be tuned to specific robot
         public static final double wheelCircumference = chosenModule.wheelCircumference;
+
 
         /* Swerve Kinematics 
          * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
@@ -145,5 +150,11 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class IntakeConstants {
+        public static final int INTAKE_MOTOR = 13;
+        public static final double INTAKE_SPEED = 0.3;
+        public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kB.value);
     }
 }

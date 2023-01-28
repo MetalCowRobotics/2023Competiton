@@ -76,6 +76,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new SequentialCommandGroup(new InstantCommand(() -> s_Swerve.zeroGyro()), new DisableVision(s_Swerve), new DriveToPoint(s_Swerve, -2.15, 0, 0), new EnableVision(s_Swerve));
+        return new SequentialCommandGroup(new InstantCommand(() -> s_Swerve.zeroGyro()), new DisableVision(s_Swerve), new DriveToPoint(s_Swerve, -2.6, 0, 0), new EnableVision(s_Swerve));
     }
 }

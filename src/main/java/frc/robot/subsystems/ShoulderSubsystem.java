@@ -14,39 +14,12 @@ public class ShoulderSubsystem extends SubsystemBase{
     }
 
     public void startMotorReverse(){
-        cim15.set(TalonSRXControlMode.PercentOutput, -.3);        
+        cim15.set(TalonSRXControlMode.PercentOutput, -0.3);        
     }
     
     public void stopMotor(){
         cim15.set(TalonSRXControlMode.PercentOutput, 0);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 

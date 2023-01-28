@@ -65,12 +65,29 @@ public class RobotContainer {
         /*Zero Gyro */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
+        if(IntakeConstants.intakeRunning == false) { 
 
-         IntakeConstants.CONT_INTAKE_RUN.onTrue(new InstantCommand(() -> m_IntakeSubsystem.run()));
-         IntakeConstants.CONT_INTAKE_RUN.onFalse(new InstantCommand(() -> m_IntakeSubsystem.stop()));
+           /*Run Intake- FORWARD */
 
-         IntakeConstants.CONT_INTAKE_RUN_REV.onTrue(new InstantCommand(() -> m_IntakeSubsystem.runReverse()));
-         IntakeConstants.CONT_INTAKE_RUN_REV.onFalse(new InstantCommand(() -> m_IntakeSubsystem.stop()));
+           IntakeConstants.CONT_INTAKE_RUN.onTrue(new InstantCommand(() -> m_IntakeSubsystem.run()));
+
+           /*Run Intake- REVERSE */
+
+           IntakeConstants.CONT_INTAKE_RUN_REV.onTrue(new InstantCommand(() -> m_IntakeSubsystem.runReverse()));
+
+        } else if (IntakeConstants.intakeRunning == true) {
+
+           /*Stop Intake- Both ways */
+           
+           IntakeConstants.CONT_INTAKE_RUN.onTrue(new InstantCommand(() -> m_IntakeSubsystem.stop()));
+           IntakeConstants.CONT_INTAKE_RUN.onTrue(new InstantCommand(() -> m_IntakeSubsystem.stop()));
+
+        }
+        // IntakeConstants.CONT_INTAKE_RUN.onTrue(new InstantCommand(() -> m_IntakeSubsystem.run()));
+        // IntakeConstants.CONT_INTAKE_RUN.onFalse(new InstantCommand(() -> m_IntakeSubsystem.stop()));
+
+        // IntakeConstants.CONT_INTAKE_RUN_REV.onTrue(new InstantCommand(() -> m_IntakeSubsystem.runReverse()));
+        // IntakeConstants.CONT_INTAKE_RUN_REV.onFalse(new InstantCommand(() -> m_IntakeSubsystem.stop()));
 
     }
 

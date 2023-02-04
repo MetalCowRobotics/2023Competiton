@@ -122,6 +122,10 @@ public class Swerve extends SubsystemBase {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
     }
 
+    public Rotation2d getRoll() {
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getRoll()) : Rotation2d.fromDegrees(gyro.getYaw());
+    }
+
     private void addVisionMeasurement() {
         PhotonPipelineResult result = camera.getLatestResult();
         // System.out.println(result.getBestTarget().getFiducialId());

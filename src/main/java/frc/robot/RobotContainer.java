@@ -33,6 +33,7 @@ public class RobotContainer {
     private final JoystickButton moveToCenter = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton moveToRight = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton autoLevel = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -62,7 +63,8 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean(),
                 () -> moveToCenter.getAsBoolean(),
                 () -> moveToLeft.getAsBoolean(),
-                () -> moveToRight.getAsBoolean()
+                () -> moveToRight.getAsBoolean(),
+                () -> autoLevel.getAsBoolean()
             )
         );
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));

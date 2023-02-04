@@ -12,8 +12,8 @@ public class DriveToPoint extends CommandBase {
 
     private Swerve m_swerve;
 
-    private final double TOLERANCE = 0.05;
-    private final double ANGLE_TOLERANCE = 0.05;
+    private final double TOLERANCE = 0.2;
+    private final double ANGLE_TOLERANCE = 0.75;
 
     private double targetX;
     private double targetY;
@@ -88,13 +88,28 @@ public class DriveToPoint extends CommandBase {
         double yaw = m_swerve.getYaw().getDegrees();
 
         yaw = yaw % 360;
-        if (yaw < 0) {
-            yaw += 360;
-        }
+        // if (yaw < 0) {
+        //     yaw += 360;
+        // }
+
+        SmartDashboard.putBoolean("x tolerance", Math.abs(x - targetX) < TOLERANCE);
+        SmartDashboard.putBoolean("y tolerance", Math.abs(y - targetY) < TOLERANCE);
+        SmartDashboard.putBoolean("angle tolerance", Math.abs(yaw - targetAngle) < ANGLE_TOLERANCE);
+        SmartDashboard.putNumber("angle error", Math.abs(yaw - targetAngle));
 
         if ( (Math.abs(x - targetX) < TOLERANCE && Math.abs(y - targetY) < TOLERANCE) && Math.abs(yaw - targetAngle) < ANGLE_TOLERANCE) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_swerve.drive(
+            new Translation2d(0, 0).times(Constants.Swerve.maxSpeed), 
+            0, 
+            true, 
+            false
+        );
     }
 }

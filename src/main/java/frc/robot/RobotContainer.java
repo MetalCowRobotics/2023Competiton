@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -76,6 +77,18 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new SequentialCommandGroup(new InstantCommand(() -> s_Swerve.zeroGyro()), new DisableVision(s_Swerve), new DriveToPoint(s_Swerve, -2.6, 0, 0), new EnableVision(s_Swerve));
+        // return new SequentialCommandGroup(new InstantCommand(() -> s_Swerve.zeroGyro()), 
+        //     new DisableVision(s_Swerve), 
+        //     new DriveToPoint(s_Swerve, -2.6, 0, 0), 
+        //     new EnableVision(s_Swerve)
+        // );
+        SmartDashboard.putBoolean("first move done", false);
+        return new SequentialCommandGroup(new InstantCommand(() -> s_Swerve.zeroGyro()), 
+            new DisableVision(s_Swerve), 
+            new DriveToPoint(s_Swerve, -4.9, .6, 0), 
+            new InstantCommand(() -> SmartDashboard.putBoolean("first move done", true)),
+            new DriveToPoint(s_Swerve, 0, 0, 0),
+            new EnableVision(s_Swerve)
+        );
     }
 }

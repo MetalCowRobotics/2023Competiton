@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -25,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+  private static final String kHallEffect = null;
+
   public static CTREConfigs ctreConfigs;
 
   private Command m_autonomousCommand;
@@ -97,18 +100,20 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during operator control. */
-  @Override
-  Encoder neomotorendcoder  = new Encoder(0, 1);
+//  commetn
+   CANSparkMax m_motor = new CANSparkMax(15, MotorType.kBrushed);
+   RelativeEncoder m_encoder = m_motor.getEncoder(kHallEffect, 4096);
+   RelativeEncoder encoder = new frc.robot.RelativeEncoder(kHallEffect );
+   @Override
   public void teleopPeriodic()  {
-    System.out.println(neomotorendcoder.getDistance());
-    
+    System.out.println(m_encoder);
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-  }
+  }z
 
   /** This function is called periodically during test mode. */
   @Override
@@ -119,3 +124,4 @@ public class Robot extends TimedRobot {
 
   }
 }
+

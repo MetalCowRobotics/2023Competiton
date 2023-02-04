@@ -14,7 +14,7 @@ public class DisableVision extends CommandBase {
 
     @Override
     public void execute() {
-        m_swerve.disableVision();
+        m_swerve.enableVision();
     }
 
     @Override

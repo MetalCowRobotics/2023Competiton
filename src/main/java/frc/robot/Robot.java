@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during operator control. */
-//  commetn
+
    CANSparkMax m_motor = new CANSparkMax(15, MotorType.kBrushed);
    RelativeEncoder m_encoder = m_motor.getEncoder(kHallEffect, 4096);
    RelativeEncoder encoder = new frc.robot.RelativeEncoder(kHallEffect );

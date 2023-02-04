@@ -32,6 +32,7 @@ public class TeleopSwerve extends CommandBase {
     private BooleanSupplier moveToCenter;
     private BooleanSupplier moveToLeft;
     private BooleanSupplier moveToRight;
+    private BooleanSupplier autoLevel;
 
     PIDController anglePIDController = new PIDController(0.04, 0, 0.001);
     PIDController xController = new PIDController(.8, 0, 0);
@@ -43,7 +44,7 @@ public class TeleopSwerve extends CommandBase {
 
     // PIDController Controller = new PIDController(.04, 0, 0);
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier moveToCenter, BooleanSupplier moveToLeft, BooleanSupplier moveToRight) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier moveToCenter, BooleanSupplier moveToLeft, BooleanSupplier moveToRight, BooleanSupplier autoLevel) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -54,6 +55,7 @@ public class TeleopSwerve extends CommandBase {
         this.moveToCenter = moveToCenter;
         this.moveToLeft = moveToLeft;
         this.moveToRight = moveToRight;
+        this.autoLevel = autoLevel;
 
         anglePIDController.setSetpoint(0);
         anglePIDController.setTolerance(6);
@@ -76,7 +78,42 @@ public class TeleopSwerve extends CommandBase {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(-rotationSup.getAsDouble(), Constants.stickDeadband);
-// 0.5, -0.9
+
+        // 0.5, -0.9
+
+        /* Level */
+        if (autoLevel.getAsBoolean()) {
+            double roll = s_Swerve.getRoll().getDegrees();
+
+            roll = roll % 360;
+
+            if (roll < 0) {
+                roll += 360;
+            }
+
+            if (roll > 180) {
+                anglePIDController.setSetpoint(360);
+            } else {
+                anglePIDController.setSetpoint(0);
+            }
+
+            double rotation = anglePIDController.calculate(roll);
+            double Correction = xController.calculate(x);
+
+            SmartDashboard.putNumber("absolute roll", roll);
+            if (Math.abs(roll - 180) < 2) {
+                rotation = 0;
+                Correction = 0;
+            }
+            
+            s_Swerve.drive(
+                new Translation2d(Correction, 0).times(Constants.Swerve.maxSpeed), 
+                -rotation * Constants.Swerve.maxAngularVelocity, 
+                !robotCentricSup.getAsBoolean(), 
+                false
+            );
+        }
+
         /* Drive */
         if ((!moveToCenter.getAsBoolean() && !moveToLeft.getAsBoolean()) && !moveToRight.getAsBoolean()) {
             s_Swerve.drive(

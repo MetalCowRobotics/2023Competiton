@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -30,7 +34,7 @@ public class Robot extends TimedRobot {
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    //m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -83,8 +87,21 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during operator control. */
+  AnalogPotentiometer anaPot = new AnalogPotentiometer(1);
+  TimeInterpolatableBuffer<Double> bufferThingy = TimeInterpolatableBuffer.createDoubleBuffer(20.0);
+
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    Double theta = anaPot.get();
+    Double time = Timer.getFPGATimestamp();
+    bufferThingy.addSample(time,theta);
+    System.out.print("Your code is kinda mid.  ");
+    if ((bufferThingy.getSample(time).isPresent()) && (bufferThingy.getSample(time-.02).isPresent())){
+      SmartDashboard.putNumber("Rate", ((bufferThingy.getSample(time).get() - bufferThingy.getSample(time-.02).get())/(.02)));
+    
+      System.out.println((bufferThingy.getSample(time).get() - bufferThingy.getSample(time-.02).get())/(.02));
+    }
+  }
 
   @Override
   public void testInit() {

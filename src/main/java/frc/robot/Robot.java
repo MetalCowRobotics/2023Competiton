@@ -4,17 +4,7 @@
 
 package frc.robot;
 
-import java.lang.annotation.Target;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -101,19 +91,24 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
 
-   CANSparkMax m_motor = new CANSparkMax(15, MotorType.kBrushed);
-   RelativeEncoder m_encoder = m_motor.getEncoder(kHallEffect, 4096);
-   RelativeEncoder encoder = new frc.robot.RelativeEncoder(kHallEffect );
+  //  CANSparkMax m_motor = new CANSparkMax(15, MotorType.kBrushed);
+  //  RelativeEncoder m_encoder = m_motor.getEncoder(kHallEffect, 4096);
+  //  RelativeEncoder encoder = new frc.robot.RelativeEncoder(kHallEffect );
+  CANSparkMax m_motor = new CANSparkMax(15, MotorType.kBrushless);
+  double motorSpeed = 0;
    @Override
   public void teleopPeriodic()  {
-    System.out.println(m_encoder);
+    m_motor.set(motorSpeed);
+    }
+
+  private void set(double d) {
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-  }z
+  }
 
   /** This function is called periodically during test mode. */
   @Override

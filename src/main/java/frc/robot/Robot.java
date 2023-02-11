@@ -101,9 +101,6 @@ public class Robot extends TimedRobot {
     m_motor.set(motorSpeed);
     }
 
-  private void set(double d) {
-  }
-
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.

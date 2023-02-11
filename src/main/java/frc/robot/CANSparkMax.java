@@ -9,4 +9,10 @@ public class CANSparkMax {
         return null;
     }
 
+    public static void getPIDController() {
+    }
+
+    public void set(double motorSpeed) {
+    }
+
 }

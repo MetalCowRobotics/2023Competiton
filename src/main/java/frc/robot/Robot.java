@@ -4,10 +4,18 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxRelativeEncoder.Type;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+
+
 
 
 
@@ -95,15 +103,14 @@ public class Robot extends TimedRobot {
 
   //  CANSparkMax m_motor = new CANSparkMax(15, MotorType.kBrushed);
   CANSparkMax m_motor = new CANSparkMax(15, MotorType.kBrushless);
-  SparkMaxRelativeEncoder encoder = CANSparkMax m_motor.getEncoder(kHallEffect, 0);
+
+  private Type kQuadrature;
+  RelativeEncoder encoder =  m_motor.getEncoder(kQuadrature, 4096);
   double motorSpeed = 0.1;
    @Override
   public void teleopPeriodic()  {
     m_motor.set(motorSpeed);
     System.out.println(encoder.getPosition());
-    if (encoder.getPosition() == null);
-
-
     SmartDashboard.putNumber("encoder", encoder.getPosition());
 
     

@@ -35,9 +35,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     ctreConfigs = new CTREConfigs();
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    CommandScheduler.getInstance().enable();
+      // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    //m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -78,12 +79,15 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {}
 
+
+  
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    //m_robotContainer.con
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -98,39 +102,16 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
   }
 
+  @Override 
+  public void testPeriodic(){
   /** This function is called periodically during test mode. */
-  
-DigitalInput input = new DigitalInput(9);
-// DigitalInput num = new DigitalInput(8)
+  }
 
-XboxController xbox = new XboxController(0);
-TalonSRX motor = new TalonSRX(16);
-TalonSRX motor2 = new TalonSRX(15);
-  /** This function is called periodically during operator control. */
+  
   @Override
   public void teleopPeriodic() {
-    //System.out.println(analog);
-    if (xbox.getRawButtonPressed( 1) || (input.get() == false)) {
-      motor.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
-      motor2.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
-    
-  }
-    if (xbox.getRawButtonReleased(1) || (input.get() == false)) {
-      motor.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0.50);
-      motor2.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0.50);  
-
-    }
-    // if (input.get()) {
-    //   
-    // }
-    // else {
-    //   System.out.println("BYE");
-    //     motor.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
-    //     motor2.set(com.ctre.phoenix.motorcontrol.TalonSRXControlMode.PercentOutput, 0);
-
-      
-    
-
+  /** This function is called periodically during operator control. */
+  
   }
 }
 

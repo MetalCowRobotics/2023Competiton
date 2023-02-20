@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -36,14 +39,31 @@ public class RobotContainer {
     private final JoystickButton autoLevel = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    private Swerve m_swerve;
+    private ShoulderSubsystem m_shoulderSubsystem;
+    // private final ElbowSubsystem m_elbowSubsystem;
+    // private final WristSubsystem m_wristSubsystem;
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        m_swerve = new Swerve();
 
-        // Configure the button bindings
-        // configureButtonBindings();
+        ServoMotorSubsystem.ServoMotorSubsystemConfig shoulderConfig = new ServoMotorSubsystem.ServoMotorSubsystemConfig();
+        shoulderConfig.motorCanID = 15;
+        shoulderConfig.stallCurentLimit = 30;
+        shoulderConfig.freeCurentLimit = 30;
+        shoulderConfig.kP = 0;
+        shoulderConfig.kI = 0;
+        shoulderConfig.kD = 0;
+        shoulderConfig.positionTolerance = 2;
+        shoulderConfig.minRPM = 0;
+        shoulderConfig.maxRPM = 0;
+        shoulderConfig.initialPosition = 0;
+        shoulderConfig.reduction = 100;
+        shoulderConfig.subsystemName = "Shoulder";
+
+        m_shoulderSubsystem = new ShoulderSubsystem(shoulderConfig);
     }
 
     /**
@@ -54,9 +74,9 @@ public class RobotContainer {
      */
     public void configureButtonBindings() {
         /* Driver Buttons */
-        s_Swerve.setDefaultCommand(
+        m_swerve.setDefaultCommand(
             new TeleopSwerve(
-                s_Swerve, 
+                m_swerve, 
                 () -> driver.getRawAxis(translationAxis), 
                 () -> driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
@@ -67,8 +87,8 @@ public class RobotContainer {
                 () -> autoLevel.getAsBoolean()
             )
         );
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        s_Swerve.enableVision();
+        zeroGyro.onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+        m_swerve.enableVision();
     }
 
     /**
@@ -78,6 +98,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new SequentialCommandGroup(new InstantCommand(() -> s_Swerve.zeroGyro()), new DisableVision(s_Swerve), new DriveToPoint(s_Swerve, -2.6, 0, 0), new EnableVision(s_Swerve));
+        return new SequentialCommandGroup(new InstantCommand(() -> m_swerve.zeroGyro()), new DisableVision(m_swerve), new DriveToPoint(m_swerve, -2.6, 0, 0), new EnableVision(m_swerve));
     }
 }

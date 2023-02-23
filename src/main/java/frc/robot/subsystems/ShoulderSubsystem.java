@@ -14,12 +14,15 @@ public class ShoulderSubsystem extends SubsystemBase{
     DigitalInput limit = new DigitalInput(2);
     DigitalInput limit2 = new DigitalInput(3);
 
+
     @Override
     public void periodic() {
-        neo.set(.1);
+        neo.set(0.30);
+    
         if(limit.get()){
             neo.set(0);
-            System.out.println("Positive");}
+            System.out.println("Positive");
+        }
         else if (limit2.get()){
             neo.set(0);
             System.out.println("Negative");
@@ -37,31 +40,5 @@ public class ShoulderSubsystem extends SubsystemBase{
     public void stopMotor(){
         neo.set(0);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 

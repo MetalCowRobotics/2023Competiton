@@ -1,5 +1,4 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -11,17 +10,19 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 
 public class ShoulderSubsystem extends SubsystemBase{
-    AnalogPotentiometer pot = new AnalogPotentiometer(0, 180, 30);
-    CANSparkMax neo = new CANSparkMax(15, MotorType.kBrushless);
-    DigitalInput input = new DigitalInput(0);
-    // Limit switch on DIO 2
+    CANSparkMax neo = new CANSparkMax(10, MotorType.kBrushless);
     DigitalInput limit = new DigitalInput(2);
     DigitalInput limit2 = new DigitalInput(3);
 
     @Override
     public void periodic() {
-        if(!limit.get() && neo.get()>0 || (!limit.get() && neo.get()<0)){
+        neo.set(.1);
+        if(limit.get()){
             neo.set(0);
+            System.out.println("Positive");}
+        else if (limit2.get()){
+            neo.set(0);
+            System.out.println("Negative");
         }
     }
 

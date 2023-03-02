@@ -16,6 +16,12 @@ public final class Constants {
     public static final double stickDeadband = 0.1;
     public static final XboxController driverControls = new XboxController(0);
     public static final XboxController operatorControls = new XboxController(1);
+    public static final JoystickButton substationIntake = new JoystickButton(operatorControls, XboxController.Button.kY.value);
+    public static final JoystickButton midScore = new JoystickButton(operatorControls, XboxController.Button.kB.value);
+    public static final JoystickButton alignLeft = new JoystickButton(driverControls, XboxController.Button.kLeftStick.value);
+    public static final JoystickButton alignRight = new JoystickButton(driverControls, XboxController.Button.kRightStick.value);
+
+
 
     public static final class Swerve {
         public static final int pigeonID = 14;

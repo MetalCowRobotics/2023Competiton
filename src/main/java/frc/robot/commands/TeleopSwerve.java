@@ -79,8 +79,6 @@ public class TeleopSwerve extends CommandBase {
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(-rotationSup.getAsDouble(), Constants.stickDeadband);
 
-        // 0.5, -0.9
-
         /* Level */
         if (autoLevel.getAsBoolean()) {
             double roll = s_Swerve.getRoll().getDegrees();
@@ -91,24 +89,24 @@ public class TeleopSwerve extends CommandBase {
                 roll += 360;
             }
 
-            if (roll > 180) {
-                anglePIDController.setSetpoint(360);
-            } else {
-                anglePIDController.setSetpoint(0);
-            }
+            // if (roll > 180) {
+            //     anglePIDController.setSetpoint(360);
+            // } else {
+            //     anglePIDController.setSetpoint(0);
+            // }
 
-            double rotation = anglePIDController.calculate(roll);
-            double Correction = xController.calculate(x);
+            anglePIDController.setSetpoint(0);
+
+            double Correction = xController.calculate(anglePIDController.getSetpoint());
 
             SmartDashboard.putNumber("absolute roll", roll);
-            if (Math.abs(roll - 180) < 2) {
-                rotation = 0;
+            if (Math.abs(roll) < 2) {
                 Correction = 0;
             }
             
             s_Swerve.drive(
                 new Translation2d(Correction, 0).times(Constants.Swerve.maxSpeed), 
-                -rotation * Constants.Swerve.maxAngularVelocity, 
+                0, 
                 !robotCentricSup.getAsBoolean(), 
                 false
             );

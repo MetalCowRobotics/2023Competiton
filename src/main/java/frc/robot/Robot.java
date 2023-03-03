@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.DigitalInput;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -14,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+
+ 
 public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
 
@@ -34,6 +39,9 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
   }
+
+  TalonSRX motor = new TalonSRX(15); // creates a new TalonSRX with ID 15
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -84,9 +92,12 @@ public class Robot extends TimedRobot {
     }
   }
 
+
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    motor.set(TalonSRXControlMode.PercentOutput, 0.1); // runs the motor at 50% power
+  }
 
   @Override
   public void testInit() {

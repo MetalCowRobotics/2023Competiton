@@ -15,11 +15,13 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +34,10 @@ public class Swerve extends SubsystemBase {
 
     private SwerveDrivePoseEstimator estimator;
     PhotonCamera camera;
+    double accelerationTime = 1;
+    private double acceleration = Constants.Swerve.maxSpeed / accelerationTime;
+
+    private SlewRateLimiter m_xSlewRateLimiter = new SlewRateLimiter();
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
@@ -158,7 +164,7 @@ public class Swerve extends SubsystemBase {
             // if (yaw < 180) {
             //     xyPosition = new Translation2d(xyPosition.getY(), xyPosition.getX());
             // }
-            Pose2d pose = new Pose2d(xyPosition.getY()-0.3302, -xyPosition.getX()+0.0762, getYaw());
+            Pose2d pose = new Pose2d(xyPosition.getY() + Units.inchesToMeters(10.5), -xyPosition.getX() - Units.inchesToMeters(4.25), getYaw());
             estimator.addVisionMeasurement(pose, time);
             SmartDashboard.putNumber("x from vision", pose.getX());
             SmartDashboard.putNumber("y from vision", pose.getY());

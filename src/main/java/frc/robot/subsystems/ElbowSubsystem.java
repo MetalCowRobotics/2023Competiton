@@ -1,6 +1,19 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ElbowSubsystem extends SubsystemBase{
+public class ElbowSubsystem extends ServoMotorSubsystem {
+
+    public ElbowSubsystem(ServoMotorSubsystemConfig config) {
+        super(config);
+    }
+
+    @Override
+    protected boolean allowPositiveMotion(double angle) {
+        return false;
+    }
+
+    @Override
+    protected boolean allowNegativeMotion(double angle) {
+        return false;
+    }
     
 }

@@ -30,6 +30,18 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+<<<<<<< Updated upstream
+=======
+    private final JoystickButton alignLeft = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton alignRight = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton stow = new JoystickButton(operator, XboxController.Axis.kRightTrigger.value);
+    private final JoystickButton groundIntake = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton lowScore = new JoystickButton(operator, XboxController.Button.kY.value);
+    private final JoystickButton midScore = new JoystickButton(operator, XboxController.Button.kB.value);
+    private final JoystickButton substationIntake = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    private final JoystickButton doubleSpeedBtn = new JoystickButton(driver, XboxController.Axis.kRightTrigger.value);
+    private final JoystickButton halfSpeedBtn = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
+>>>>>>> Stashed changes
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();

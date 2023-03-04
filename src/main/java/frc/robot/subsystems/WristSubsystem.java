@@ -5,6 +5,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class WristSubsystem extends SubsystemBase{
     CANSparkMax neo = new CANSparkMax(17, MotorType.kBrushless);
-
+    public void positive () {
+        motor.set(1);
+     }    
+     public void negative () {
+        motor.set(-1);
+     }    
+    }
     
 }

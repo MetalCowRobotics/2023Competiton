@@ -20,8 +20,8 @@ public class DriveToPoint extends CommandBase {
     private double targetAngle;
 
     private PIDController anglePIDController = new PIDController(0.04, 0, 0.001);
-    private PIDController xController = new PIDController(0.8, 0, 0);
-    private PIDController yController = new PIDController(0.8, 0, 0);
+    private PIDController xController = new PIDController(0.6, 0, 0);
+    private PIDController yController = new PIDController(0.6, 0, 0);
 
     public DriveToPoint(Swerve swerve, double x, double y, double theta) {
         this.m_swerve = swerve;
@@ -73,8 +73,8 @@ public class DriveToPoint extends CommandBase {
         double yCorrection = yController.calculate(y);
         // SmartDashboard.putNumber("absolute yaw", yaw);
         
-        m_swerve.drive(
-            new Translation2d(xCorrection, yCorrection).times(Constants.Swerve.maxSpeed), 
+        m_swerve.driveAuto(
+            new Translation2d(xCorrection, yCorrection).times(Constants.Swerve.maxAutoSpeed), 
             -rotation * Constants.Swerve.maxAngularVelocity, 
             true, 
             false

@@ -86,6 +86,7 @@ public final class Constants {
         /* Swerve Profiling Values */
         /** Meters per Second */
         public static final double maxSpeed = 2.9; //TODO: This must be tuned to specific robot
+        public static final double maxAutoSpeed = 1.5;
         /** Radians per Second */
         public static final double maxAngularVelocity = (3 * Math.PI) / 2; //TODO: This must be tuned to specific robot
 
@@ -157,6 +158,14 @@ public final class Constants {
         public static Boolean intakeRunning = false;
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kRightBumper.value);
         public static final JoystickButton CONT_INTAKE_RUN_REV = new JoystickButton(operatorControls, XboxController.Button.kLeftBumper.value);
+    }
+
+    public static final class ArmConstants {
+        public static final class MidScoring {
+            public static final double SHOULDER_ANGLE = 55;
+            public static final double ELBOW_ANGLE = 45;
+            public static final double WRIST_ANGLE = 90;
+        }
     }
 
 }

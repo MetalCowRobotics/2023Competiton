@@ -6,9 +6,9 @@ import frc.robot.subsystems.Swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
+// import org.photonvision.PhotonCamera;
+// import org.photonvision.targeting.PhotonPipelineResult;
+// import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -37,6 +37,7 @@ public class TeleopSwerve extends CommandBase {
     PIDController anglePIDController = new PIDController(0.04, 0, 0.001);
     PIDController xController = new PIDController(.8, 0, 0);
     PIDController yController = new PIDController(.8, 0, 0);
+    PIDController rollController = new PIDController(.6, 0, 0);
 
     private double targetX = -0.14;
     private double targetY = -0.42;
@@ -62,6 +63,9 @@ public class TeleopSwerve extends CommandBase {
 
         xController.setSetpoint(targetX);
         yController.setSetpoint(targetY);
+
+        rollController.setSetpoint(0);
+        rollController.setTolerance(2, 2);
         
     }
 
@@ -115,9 +119,23 @@ public class TeleopSwerve extends CommandBase {
         }
 
         /* Drive */
-        if ((!moveToCenter.getAsBoolean() && !moveToLeft.getAsBoolean()) && !moveToRight.getAsBoolean()) {
+        if ((!moveToCenter.getAsBoolean() && !moveToLeft.getAsBoolean()) && (!moveToRight.getAsBoolean() && !autoLevel.getAsBoolean())) {
             s_Swerve.drive(
                 new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
+                rotationVal * Constants.Swerve.maxAngularVelocity, 
+                !robotCentricSup.getAsBoolean(), 
+                false
+            );
+        } else if (autoLevel.getAsBoolean()) {
+            double roll = s_Swerve.getRoll().getDegrees();
+            double correction = rollController.calculate(roll);
+
+            if (rollController.atSetpoint()) {
+                correction = 0.0;
+            }
+
+            s_Swerve.drive(
+                new Translation2d(correction, 0).times(Constants.Swerve.maxSpeed / 4.0), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
                 !robotCentricSup.getAsBoolean(), 
                 false
@@ -153,8 +171,6 @@ public class TeleopSwerve extends CommandBase {
             } else {
                 anglePIDController.setSetpoint(0);
             }
-
-            // anglePIDController.setSetpoint(180);
 
             double rotation = anglePIDController.calculate(yaw);
             double xCorrection = xController.calculate(x);

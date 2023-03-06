@@ -13,7 +13,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private boolean debug = false;
 
 
-    private CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.INTAKE_MOTOR, MotorType.kBrushless);
+    private CANSparkMax intakeMotor = new CANSparkMax(16, MotorType.kBrushless);
     private double motorSpeed = 0;
 
     // private static final Spark m_intakeRoller = new Spark(INTAKE_ROLLER_CAN_NUM

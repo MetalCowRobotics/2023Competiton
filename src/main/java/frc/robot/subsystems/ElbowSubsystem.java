@@ -8,12 +8,12 @@ public class ElbowSubsystem extends ServoMotorSubsystem {
 
     @Override
     protected boolean allowPositiveMotion(double angle) {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean allowNegativeMotion(double angle) {
-        return false;
+        return true;
     }
     
 }

@@ -34,10 +34,13 @@ public class Swerve extends SubsystemBase {
 
     private SwerveDrivePoseEstimator estimator;
     PhotonCamera camera;
-    double accelerationTime = 1;
-    private double acceleration = Constants.Swerve.maxSpeed / accelerationTime;
+    double accelerationTime = 1.0;
+    private double linearAcceleration = Constants.Swerve.maxSpeed / accelerationTime;
+    private double angularAcceleration = Constants.Swerve.maxAngularVelocity / accelerationTime;
 
-    private SlewRateLimiter m_xSlewRateLimiter = new SlewRateLimiter();
+    private SlewRateLimiter m_xSlewRateLimiter = new SlewRateLimiter(linearAcceleration, -linearAcceleration, 0);
+    private SlewRateLimiter m_ySlewRateLimiter = new SlewRateLimiter(linearAcceleration, -linearAcceleration, 0);
+    private SlewRateLimiter m_angleSlewRateLimiter = new SlewRateLimiter(angularAcceleration, -angularAcceleration, 0);
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
@@ -67,25 +70,54 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+        double xSpeed = m_xSlewRateLimiter.calculate(translation.getX());
+        double ySpeed = m_ySlewRateLimiter.calculate(translation.getY());
+        double angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation, 
+                                    xSpeed, 
+                                    ySpeed, 
+                                    angularVelocity, 
                                     getYaw()
                                 )
                                 : new ChassisSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation)
+                                    xSpeed, 
+                                    ySpeed, 
+                                    angularVelocity
+                                )
                                 );
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    }    
+    }
+    
+    public void driveAuto(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+        double xSpeed = translation.getX();
+        double ySpeed = translation.getY();
+        double angularVelocity = rotation;
+        SwerveModuleState[] swerveModuleStates =
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                                    xSpeed, 
+                                    ySpeed, 
+                                    angularVelocity, 
+                                    getYaw()
+                                )
+                                : new ChassisSpeeds(
+                                    xSpeed, 
+                                    ySpeed, 
+                                    angularVelocity
+                                )
+                                );
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+
+        for(SwerveModule mod : mSwerveMods){
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+        }
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -122,6 +154,10 @@ public class Swerve extends SubsystemBase {
 
     public void zeroGyro(){
         gyro.setYaw(0);
+    }
+
+    public void zeroGyro(double angle){
+        gyro.setYaw(angle);
     }
 
     public Rotation2d getYaw() {

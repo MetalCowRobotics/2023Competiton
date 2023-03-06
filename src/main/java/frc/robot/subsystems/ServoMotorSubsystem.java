@@ -32,11 +32,11 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
 
     private boolean inverted;
     public static class ServoMotorSubsystemConfig {
-        public double nominalVoltage = 12.6;
+        public double nominalVoltage = 12;
         public double rampTime = 0.125;
         public int motorCanID;
         public boolean inverted = false;
-        public CANSparkMax.IdleMode idleMode = CANSparkMax.IdleMode.kCoast;
+        public CANSparkMax.IdleMode idleMode = CANSparkMax.IdleMode.kBrake;
         public int stallCurentLimit;
         public int freeCurentLimit;
 
@@ -58,8 +58,8 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
 
     protected ServoMotorSubsystem(ServoMotorSubsystemConfig config) {
         m_motor = new CANSparkMax(config.motorCanID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        m_motor.enableVoltageCompensation(config.nominalVoltage);
-        // m_motor.disableVoltageCompensation();
+        // m_motor.enableVoltageCompensation(config.nominalVoltage);
+        m_motor.disableVoltageCompensation();
         m_motor.setOpenLoopRampRate(config.rampTime);
         m_motor.setClosedLoopRampRate(config.rampTime);
         m_motor.setInverted(config.inverted);

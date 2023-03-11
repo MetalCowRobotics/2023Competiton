@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.*;
 import edu.wpi.first.wpilibj.XboxController;
@@ -23,6 +26,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private Relay greenLightRelay = new Relay(0);
+
+  private final XboxController driver = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -91,12 +98,26 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+
+    greenLightRelay.set(Relay.Value.kOff);
+
     }
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (driver.getAButton()) {
+      greenLightRelay.set(Relay.Value.kForward);
+
+    }
+
+    if (driver.getBButton()) {
+      greenLightRelay.set(Relay.Value.kOff);
+
+    }
+
+  }
 
   @Override
   public void testInit() {
@@ -104,10 +125,12 @@ public class Robot extends TimedRobot {
 
     // CommandScheduler.getInstance().cancelAll();
     
-    m_talon12.set(ControlMode.PercentOutput, -(m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
-    m_talon7.set(ControlMode.PercentOutput, -(m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
-    m_talon9.set(ControlMode.PercentOutput, (m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
-    m_talon10.set(ControlMode.PercentOutput, (m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
+    // m_talon12.set(ControlMode.PercentOutput, -(m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
+    // m_talon7.set(ControlMode.PercentOutput, -(m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
+    // m_talon9.set(ControlMode.PercentOutput, (m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
+    // m_talon10.set(ControlMode.PercentOutput, (m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
+
+    
   }
 
   /** This function is called periodically during test mode. */

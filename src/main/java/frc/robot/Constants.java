@@ -158,9 +158,12 @@ public final class Constants {
         public static Boolean intakeRunning = false;
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kRightBumper.value);
         public static final JoystickButton CONT_INTAKE_RUN_REV = new JoystickButton(operatorControls, XboxController.Button.kLeftBumper.value);
+        public static final int coneSensorID = 0;
+        public static final int cubeSensorID = 0;
     }
 
     public static final class WristConstants {
         public static final int WRIST_MOTOR = 17;
+
     }
 }

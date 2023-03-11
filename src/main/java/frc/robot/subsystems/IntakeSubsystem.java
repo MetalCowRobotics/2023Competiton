@@ -1,12 +1,19 @@
 package frc.robot.subsystems;
 
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
+    DigitalInput coneSensor = new DigitalInput(IntakeConstants.coneSensorID);
+    DigitalInput cubeSensor = new DigitalInput(IntakeConstants.cubeSensorID);
+    
     private boolean debug = false;
 
     private CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.INTAKE_MOTOR, MotorType.kBrushless);
@@ -40,4 +47,11 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic() {
         intakeMotor.set(motorSpeed);
     }
+
+    public boolean isConePresent(){
+       return coneSensor.get();
+    }
+    public boolean isCubePresent(){
+        return cubeSensor.get();
+     }
 }

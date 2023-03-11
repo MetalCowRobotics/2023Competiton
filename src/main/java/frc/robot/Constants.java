@@ -157,4 +157,14 @@ public final class Constants {
         public static final double INTAKE_SPEED = 0.3;
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kB.value);
     }
+
+    public static final class ElbowConstants {
+        public static final int elbowSensorID = 2;
+        
+    }
+
+    public static final class ShoulderConstants {
+        public static final int shoulderSensorID = 3;
+        
+    }
 }

@@ -6,12 +6,16 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class ServoMotorSubsystem extends SubsystemBase {
     private CANSparkMax m_motor;
     private RelativeEncoder encoder;
+    private PowerDistribution pdp;
 
     private PIDController m_pidController;
 
@@ -58,8 +62,8 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
 
     protected ServoMotorSubsystem(ServoMotorSubsystemConfig config) {
         m_motor = new CANSparkMax(config.motorCanID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        // m_motor.enableVoltageCompensation(config.nominalVoltage);
-        m_motor.disableVoltageCompensation();
+        m_motor.enableVoltageCompensation(config.nominalVoltage);
+        // m_motor.disableVoltageCompensation();
         m_motor.setOpenLoopRampRate(config.rampTime);
         m_motor.setClosedLoopRampRate(config.rampTime);
         m_motor.setInverted(config.inverted);
@@ -76,6 +80,7 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
         this.reduction = config.reduction;
 
         m_pidController = new PIDController(config.kP, config.kI, config.kD);
+        m_pidController.setIntegratorRange(-0.6, 0.6);
 
         this.positionTolerance = config.positionTolerance;
 

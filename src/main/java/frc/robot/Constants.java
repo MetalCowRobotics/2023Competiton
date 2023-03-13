@@ -154,18 +154,44 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final int INTAKE_MOTOR = 16;
-        public static final double INTAKE_SPEED = 0.3;
+        public static final double INTAKE_SPEED = 0.8;
         public static Boolean intakeRunning = false;
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kRightBumper.value);
         public static final JoystickButton CONT_INTAKE_RUN_REV = new JoystickButton(operatorControls, XboxController.Button.kLeftBumper.value);
     }
 
     public static final class ArmConstants {
-        public static final class MidScoring {
-            public static final double SHOULDER_ANGLE = 55;
-            public static final double ELBOW_ANGLE = 45;
-            public static final double WRIST_ANGLE = 90;
+        public static final class SubstationCone {
+            public static final double SHOULDER_ANGLE = 61;
+            public static final double ELBOW_ANGLE = 60;
+            public static final double WRIST_ANGLE = 104;
         }
+        public static final class SubstationCube {
+            public static final double SHOULDER_ANGLE = 56;
+            public static final double ELBOW_ANGLE = 51;
+            public static final double WRIST_ANGLE = 89;
+        }
+        public static final class GroundCone {
+            public static final double SHOULDER_ANGLE = 75;
+            public static final double ELBOW_ANGLE = -40;
+            public static final double WRIST_ANGLE = 0;
+        }
+        public static final class GroundCube {
+            public static final double SHOULDER_ANGLE = 75;
+            public static final double ELBOW_ANGLE = -40;
+            public static final double WRIST_ANGLE = 0;
+        }
+        public static final class MidScoring {
+            public static final double SHOULDER_ANGLE = 65;
+            public static final double ELBOW_ANGLE = 44;
+            public static final double WRIST_ANGLE = 65;
+        }
+        public static final class LowScoring {
+            public static final double SHOULDER_ANGLE = 0;
+            public static final double ELBOW_ANGLE = 0;
+            public static final double WRIST_ANGLE = 72;
+        }
+
     }
 
 }

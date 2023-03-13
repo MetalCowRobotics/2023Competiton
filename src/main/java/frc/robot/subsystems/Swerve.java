@@ -34,13 +34,15 @@ public class Swerve extends SubsystemBase {
 
     private SwerveDrivePoseEstimator estimator;
     PhotonCamera camera;
-    double accelerationTime = 1.0;
+    double accelerationTime = 0.5;
     private double linearAcceleration = Constants.Swerve.maxSpeed / accelerationTime;
     private double angularAcceleration = Constants.Swerve.maxAngularVelocity / accelerationTime;
 
     private SlewRateLimiter m_xSlewRateLimiter = new SlewRateLimiter(linearAcceleration, -linearAcceleration, 0);
     private SlewRateLimiter m_ySlewRateLimiter = new SlewRateLimiter(linearAcceleration, -linearAcceleration, 0);
     private SlewRateLimiter m_angleSlewRateLimiter = new SlewRateLimiter(angularAcceleration, -angularAcceleration, 0);
+
+    private int lastTrackedTarget = -1;
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
@@ -57,7 +59,7 @@ public class Swerve extends SubsystemBase {
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
         estimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(0, 0, getYaw()));
 
-        camera = new PhotonCamera("USB_Camera-B4.09.24.1");
+        camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
         
     }
 
@@ -170,8 +172,6 @@ public class Swerve extends SubsystemBase {
 
     private void addVisionMeasurement() {
         PhotonPipelineResult result = camera.getLatestResult();
-        // System.out.println(result.getBestTarget().getFiducialId());
-        // result.getBestTarget = target = result..BestTarget 
         PhotonTrackedTarget target = result.getBestTarget();
         if (null != target) {
             double time = result.getTimestampSeconds();
@@ -191,7 +191,7 @@ public class Swerve extends SubsystemBase {
             } else if (yaw <= 270) {
                 correctionAngle = 270 - yaw;
             } else if (yaw <= 360) {
-                correctionAngle = 360 - yaw + 90;
+                correctionAngle = 360 - yaw; // 360 - yaw + 90
             }
 
             Rotation2d correction = Rotation2d.fromDegrees(-correctionAngle);
@@ -201,7 +201,12 @@ public class Swerve extends SubsystemBase {
             //     xyPosition = new Translation2d(xyPosition.getY(), xyPosition.getX());
             // }
             Pose2d pose = new Pose2d(xyPosition.getY() + Units.inchesToMeters(10.5), -xyPosition.getX() - Units.inchesToMeters(4.25), getYaw());
-            estimator.addVisionMeasurement(pose, time);
+            if (lastTrackedTarget == target.getFiducialId()) {
+                estimator.addVisionMeasurement(pose, time);
+            } else {
+                resetOdometry(pose);
+            }
+            lastTrackedTarget = target.getFiducialId();
             SmartDashboard.putNumber("x from vision", pose.getX());
             SmartDashboard.putNumber("y from vision", pose.getY());
         }

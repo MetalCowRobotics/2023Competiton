@@ -1,11 +1,12 @@
 package frc.robot.subsystems;
 
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTREConfigs;
 import frc.robot.Constants.IntakeConstants;
 
 
@@ -13,12 +14,14 @@ public class IntakeSubsystem extends SubsystemBase {
     private boolean debug = false;
 
 
-    private CANSparkMax intakeMotor = new CANSparkMax(16, MotorType.kBrushless);
+    private TalonSRX intakeMotor = new TalonSRX(16);
     private double motorSpeed = 0;
+    CTREConfigs configs = new CTREConfigs();
 
     // private static final Spark m_intakeRoller = new Spark(INTAKE_ROLLER_CAN_NUM
 
     public IntakeSubsystem() {
+        intakeMotor.configAllSettings(configs.intakeMotorConfig);
     }
 
 
@@ -29,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void run(){
         motorSpeed = IntakeConstants.INTAKE_SPEED;
         IntakeConstants.intakeRunning = true;
-        System.out.println("RUN");
+        // System.out.println("RUN");
     }
 
 
@@ -47,7 +50,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        intakeMotor.set(motorSpeed);
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, motorSpeed);
     }
 }
 

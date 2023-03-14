@@ -37,6 +37,7 @@ public class Swerve extends SubsystemBase {
     double accelerationTime = 0.5;
     private double linearAcceleration = Constants.Swerve.maxSpeed / accelerationTime;
     private double angularAcceleration = Constants.Swerve.maxAngularVelocity / accelerationTime;
+    private double runningSpeed = Constants.Swerve.maxSpeed;
 
     private SlewRateLimiter m_xSlewRateLimiter = new SlewRateLimiter(linearAcceleration, -linearAcceleration, 0);
     private SlewRateLimiter m_ySlewRateLimiter = new SlewRateLimiter(linearAcceleration, -linearAcceleration, 0);
@@ -89,7 +90,7 @@ public class Swerve extends SubsystemBase {
                                     angularVelocity
                                 )
                                 );
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, runningSpeed);
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -120,7 +121,18 @@ public class Swerve extends SubsystemBase {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }
+// methods for decreasing and increasing speed
+public void decreaseSpeed(){
+    runningSpeed=Constants.Swerve.halfMaxSpeed;
+}
 
+public void increaseSpeed(){
+    runningSpeed = Constants.Swerve.doubleMaxSpeed;
+}
+
+public void setNormalSpeed(){
+    runningSpeed = Constants.Swerve.maxSpeed;
+}
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
@@ -153,7 +165,6 @@ public class Swerve extends SubsystemBase {
         }
         return positions;
     }
-
     public void zeroGyro(){
         gyro.setYaw(0);
     }

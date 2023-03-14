@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -90,6 +89,8 @@ public final class Constants {
         /** Meters per Second */
         public static final double maxSpeed = 2.9; //TODO: This must be tuned to specific robot
         public static final double maxAutoSpeed = 1.5;
+        public static final double halfMaxSpeed = maxSpeed/2;
+        public static final double doubleMaxSpeed = maxSpeed*2;
         /** Radians per Second */
         public static final double maxAngularVelocity = (3 * Math.PI) / 2; //TODO: This must be tuned to specific robot
 

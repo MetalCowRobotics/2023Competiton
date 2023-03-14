@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.Constants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -75,10 +76,14 @@ public class RobotContainer {
     Trigger substationRight = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kRightBumper.value));
     Trigger substationLeft = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kLeftBumper.value));
 
-    Trigger drive = new Trigger(() -> 
+    Trigger drive = new Trigger(() ->
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
-        (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1)
-    );
+        (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1));
+
+    Trigger drive_speed_half = new Trigger(() -> (driver.getRawAxis(XboxController.Axis.kLeftTrigger.value)) > 0.7 );
+    Trigger drive_speed_double = new Trigger(() -> (driver.getRawAxis(XboxController.Axis.kRightTrigger.value)) > 0.7); 
+
+    
     // private final JoystickButton stopstow = new JoystickButton(operator, XboxController.Button.kB.value);
 
     /* Subsystems */
@@ -257,6 +262,14 @@ public class RobotContainer {
         moveToRight.onTrue(alignToRight);
 
         drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft, alignToMiddle, alignToRight)));
+
+    
+
+        drive_speed_half.onTrue(new InstantCommand(() -> m_swerve.decreaseSpeed()));
+        drive_speed_half.onFalse(new InstantCommand(() -> m_swerve.setNormalSpeed()));
+
+        drive_speed_double.onTrue(new InstantCommand(() -> m_swerve.increaseSpeed()));
+        drive_speed_double.onFalse(new InstantCommand(() -> m_swerve.setNormalSpeed()));
 
         m_swerve.enableVision();
 

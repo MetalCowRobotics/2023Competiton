@@ -174,12 +174,12 @@ public final class Constants {
         public static final class GroundCone {
             public static final double SHOULDER_ANGLE = 75;
             public static final double ELBOW_ANGLE = -40;
-            public static final double WRIST_ANGLE = 0;
+            public static final double WRIST_ANGLE = 15;
         }
         public static final class GroundCube {
             public static final double SHOULDER_ANGLE = 75;
             public static final double ELBOW_ANGLE = -40;
-            public static final double WRIST_ANGLE = 0;
+            public static final double WRIST_ANGLE = 15;
         }
         public static final class MidScoring {
             public static final double SHOULDER_ANGLE = 65;

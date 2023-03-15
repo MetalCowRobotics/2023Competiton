@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -166,7 +167,8 @@ public class RobotContainer {
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
-            new InstantCommand(() -> m_IntakeSubsystem.run()),
+            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+            new WaitCommand(0.5),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
             new DriveToPoint(m_swerve, -3, 0, 180),
             new EnableVision(m_swerve)
@@ -177,9 +179,11 @@ public class RobotContainer {
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+            new WaitCommand(0.5),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
             new DriveToPoint(m_swerve, -5.5, 0, 180),
-            new DriveToPoint(m_swerve, -3.1, 0, 180),
+            new DriveToPoint(m_swerve, -3.5, 0, 180),
             new EnableVision(m_swerve)
         );
 
@@ -188,6 +192,8 @@ public class RobotContainer {
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+            new WaitCommand(0.5),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
             new DriveToPoint(m_swerve, -3, 0, 180),
             new EnableVision(m_swerve)
@@ -198,6 +204,8 @@ public class RobotContainer {
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+            new WaitCommand(0.5),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
             new DriveToPoint(m_swerve, -4.3, 0, 180),
             new DriveToPoint(m_swerve, -4.3, 2.5, 180),
@@ -210,14 +218,16 @@ public class RobotContainer {
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+            new WaitCommand(0.5),
             new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
-            new DriveToPoint(m_swerve, -3.1, 0, 180),
+            new DriveToPoint(m_swerve, -2.5, 0, 180),
             new EnableVision(m_swerve)
         );
 
-        alignToMiddle = new AlignToPoint(m_swerve, 0.9, 0, 180);
-        alignToLeft = new AlignToPoint(m_swerve, 0.9, 0.6, 180);
-        alignToRight = new AlignToPoint(m_swerve, 0.9, -0.6, 180);
+        alignToMiddle = new AlignToPoint(m_swerve, 0.6, 0, 0);
+        alignToLeft = new AlignToPoint(m_swerve, 0.6, 0.6, 0);
+        alignToRight = new AlignToPoint(m_swerve, 0.6, -0.6, 0);
         
         m_autoSelector.addOption("Charge Station Score + Dock", chargeStationScoreDock);
         m_autoSelector.addOption("Charge Station Score + Mobility + Dock", chargeStationScoreMobilityDock);
@@ -380,6 +390,7 @@ public class RobotContainer {
                 )
             )
         );
+        m_IntakeSubsystem.stop();
     }
 
     public Command getAutonomousCommand() {

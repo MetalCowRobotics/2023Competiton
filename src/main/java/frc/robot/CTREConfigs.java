@@ -20,8 +20,8 @@ public final class CTREConfigs {
         swerveCanCoderConfig = new CANCoderConfiguration();
         intakeMotorConfig = new TalonSRXConfiguration();
 
-        intakeMotorConfig.continuousCurrentLimit = 15;
-        intakeMotorConfig.peakCurrentLimit = 20;
+        intakeMotorConfig.continuousCurrentLimit = 10;
+        intakeMotorConfig.peakCurrentLimit = 15;
         intakeMotorConfig.peakCurrentDuration = 100;
         intakeMotorConfig.openloopRamp = 0.5;
 

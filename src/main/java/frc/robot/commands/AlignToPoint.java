@@ -9,7 +9,7 @@ import frc.robot.subsystems.Swerve;
 public class AlignToPoint extends CommandBase {
     
     private Swerve m_swerve;
-    private PIDController anglePIDController = new PIDController(0.004, 0, 0.001);
+    private PIDController anglePIDController = new PIDController(0.004, 0, 0.000);
     private PIDController xController = new PIDController(.8, 0, 0);
     private PIDController yController = new PIDController(.8, 0, 0);
     double targetX;
@@ -50,6 +50,7 @@ public class AlignToPoint extends CommandBase {
 
         xController.setSetpoint(targetX);
         yController.setSetpoint(targetY);
+        anglePIDController.setSetpoint(targetYaw);
 
         yaw = m_swerve.getYaw().getDegrees();
 
@@ -58,10 +59,12 @@ public class AlignToPoint extends CommandBase {
             yaw += 360;
         }
 
-        if (yaw > 180) {
-            anglePIDController.setSetpoint(360);
-        } else {
-            anglePIDController.setSetpoint(0);
+        if (targetYaw == 0) {
+            if (yaw > 180) {
+                anglePIDController.setSetpoint(360);
+            } else {
+                anglePIDController.setSetpoint(0);
+            }
         }
 
         double rotation = anglePIDController.calculate(yaw);

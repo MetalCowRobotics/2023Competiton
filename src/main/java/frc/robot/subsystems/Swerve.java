@@ -35,6 +35,7 @@ public class Swerve extends SubsystemBase {
     private SwerveDrivePoseEstimator estimator;
     PhotonCamera camera;
     double accelerationTime = 0.5;
+    int i = 0;
     private double linearAcceleration = Constants.Swerve.maxSpeed / accelerationTime;
     private double angularAcceleration = Constants.Swerve.maxAngularVelocity / accelerationTime;
 
@@ -210,6 +211,8 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("x from vision", pose.getX());
             SmartDashboard.putNumber("y from vision", pose.getY());
         }
+        SmartDashboard.putNumber("x from vision", -99);
+        SmartDashboard.putNumber("y from vision", -99);
     }
 
     @Override
@@ -217,6 +220,8 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getYaw(), getModulePositions());
         estimator.update(getYaw(), getModulePositions());
         if (visionEnabled) {
+            SmartDashboard.putNumber("vision count", i);
+            i++;
             addVisionMeasurement();
         }
         SmartDashboard.putBoolean("vision enabled", visionEnabled);

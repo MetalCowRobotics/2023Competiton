@@ -107,6 +107,10 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
         return Units.rotationsToDegrees(encoder.getPosition() / reduction) + initialPosition;
     }
 
+    public double getTargetAngle() {
+        return this.targetAngle;
+    }
+
     public double getCurrentVelocity() {
         return Units.rotationsToDegrees(encoder.getVelocity() / reduction);
     }

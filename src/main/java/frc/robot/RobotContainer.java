@@ -2,14 +2,17 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
@@ -65,7 +68,10 @@ public class RobotContainer {
     private final JoystickButton lowScoringPosition = new JoystickButton(operator, XboxController.Button.kB.value);
     private final JoystickButton midScoringPosition = new JoystickButton(operator, XboxController.Button.kY.value);
     private final JoystickButton stow = new JoystickButton(operator, XboxController.Button.kA.value);
-    
+
+    Trigger crawl = new Trigger(() -> driver.getRawAxis(XboxController.Axis.kLeftTrigger.value) > 0.8);
+    Trigger sprint = new Trigger(() -> driver.getRawAxis(XboxController.Axis.kRightTrigger.value) > 0.8);
+
     Trigger cubeFloorIntakePosition = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightY.value) > 0.8);
     Trigger coneFloorIntakePosition = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftY.value) > 0.8);
 
@@ -75,6 +81,9 @@ public class RobotContainer {
 
     Trigger substationRight = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kRightBumper.value));
     Trigger substationLeft = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kLeftBumper.value));
+
+    Trigger wristUp = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftX.value) > 0.7);
+    Trigger wristDown = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightX.value) > 0.7);
 
     Trigger drive = new Trigger(() -> 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
@@ -90,11 +99,13 @@ public class RobotContainer {
     private IntakeSubsystem m_IntakeSubsystem;
 
     /* Autos */
+    private double armMovementTimeout = 4;
     private SendableChooser<Command> m_autoSelector;               
     
     private Command chargeStationScoreMobilityDock;
     private Command chargeStationScoreDock;
     private Command substationScoreMobilityDockBlue;
+    private Command substationScoreMobilityDockRed;
     private Command substationScoreMobilityBlue;
     private Command cableRunScoreMobility;
     private Command armTest;
@@ -166,11 +177,18 @@ public class RobotContainer {
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
-            new DriveToPoint(m_swerve, -3, 0, 180),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new DriveToPoint(m_swerve, -4, 0, 180),
             new EnableVision(m_swerve)
         );
 
@@ -178,12 +196,19 @@ public class RobotContainer {
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+                new WaitCommand(armMovementTimeout)
+            ),
             new DriveToPoint(m_swerve, -5.5, 0, 180),
-            new DriveToPoint(m_swerve, -3.5, 0, 180),
+            new DriveToPoint(m_swerve, -2.715, 0, 180),
             new EnableVision(m_swerve)
         );
 
@@ -191,10 +216,17 @@ public class RobotContainer {
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+                new WaitCommand(armMovementTimeout)
+            ),
             new DriveToPoint(m_swerve, -3, 0, 180),
             new EnableVision(m_swerve)
         );
@@ -203,13 +235,41 @@ public class RobotContainer {
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+                new WaitCommand(armMovementTimeout)
+            ),
             new DriveToPoint(m_swerve, -4.3, 0, 180),
             new DriveToPoint(m_swerve, -4.3, 2.5, 180),
             new DriveToPoint(m_swerve, -2.1, 2.5, 180),
+            new EnableVision(m_swerve)
+        );
+
+        substationScoreMobilityDockRed = new SequentialCommandGroup(
+            new DisableVision(m_swerve),
+            new InstantCommand(() -> m_swerve.zeroGyro(180)),
+            new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+            new WaitCommand(0.5),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new DriveToPoint(m_swerve, -4.3, 0, 180),
+            new DriveToPoint(m_swerve, -4.3, -2.5, 180),
+            new DriveToPoint(m_swerve, -2.1, -2.5, 180),
             new EnableVision(m_swerve)
         );
 
@@ -217,28 +277,39 @@ public class RobotContainer {
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
-            new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
-            new DriveToPoint(m_swerve, -2.5, 0, 180),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0, 0),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new DriveToPoint(m_swerve, -2.7, 0, 180),
             new EnableVision(m_swerve)
         );
-
-        alignToMiddle = new AlignToPoint(m_swerve, 0.6, 0, 0);
-        alignToLeft = new AlignToPoint(m_swerve, 0.6, 0.6, 0);
-        alignToRight = new AlignToPoint(m_swerve, 0.6, -0.6, 0);
+        if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+            alignToMiddle = new AlignToPoint(m_swerve, -0.4, 0, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.4, 0.577, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.4, -0.577-0.15, 180);
+        } else {
+            alignToMiddle = new AlignToPoint(m_swerve, -0.4, 0, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.4, -0.577, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.4, 0.577+0.15, 180);
+        }
         
         m_autoSelector.addOption("Charge Station Score + Dock", chargeStationScoreDock);
         m_autoSelector.addOption("Charge Station Score + Mobility + Dock", chargeStationScoreMobilityDock);
         m_autoSelector.addOption("Blue Substation Score + Mobility + Dock", substationScoreMobilityDockBlue);
+        m_autoSelector.addOption("Red Substation Score + Mobility + Dock", substationScoreMobilityDockRed);
         m_autoSelector.addOption("Blue Substation Score + Mobility", substationScoreMobilityBlue);
         m_autoSelector.addOption("Cable Run Score Mobility", cableRunScoreMobility);
         m_autoSelector.addOption("arm test", armTest);
         m_autoSelector.setDefaultOption("None", noAuto);
-        SmartDashboard.putData(m_autoSelector);
-
-        
+        SmartDashboard.putData(m_autoSelector);        
     }
 
     /**
@@ -277,6 +348,15 @@ public class RobotContainer {
         intakeReverse.onFalse(new InstantCommand(() -> m_IntakeSubsystem.stop()));
 
         stopIntake.onTrue(new InstantCommand(() -> m_IntakeSubsystem.stop()));
+
+        wristUp.onTrue(new InstantCommand(() -> m_wristSubsystem.wristUp()));
+        wristDown.onTrue(new InstantCommand(() -> m_wristSubsystem.wristDown()));
+
+        crawl.onTrue(new InstantCommand(() -> m_swerve.setCrawl()));
+        crawl.onFalse(new InstantCommand(() -> m_swerve.setBase()));
+
+        sprint.onTrue(new InstantCommand(() -> m_swerve.setSprint()));
+        sprint.onFalse(new InstantCommand(() -> m_swerve.setBase()));
 
         midScoringPosition.onTrue(
             new SequentialCommandGroup(

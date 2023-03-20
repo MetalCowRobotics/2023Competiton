@@ -24,4 +24,11 @@ public class WristSubsystem extends ServoMotorSubsystem {
         // return true;
     }
     
+    public void wristUp() {
+        super.setTarget(getTargetAngle() + 2.0);
+    }
+
+    public void wristDown() {
+        super.setTarget(getTargetAngle() - 2.0);
+    }
 }

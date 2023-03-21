@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.util.ArmPathPlanner;
+import frc.robot.util.Point;
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all. Unless you know what
@@ -21,5 +23,18 @@ public final class Main {
    */
   public static void main(String... args) {
     RobotBase.startRobot(Robot::new);
+    // ArmPathPlanner pathPlanner = new ArmPathPlanner(16.5, 20.5);
+    // Point current = new Point(5, 0);
+    // Point target = new Point(20, 10);
+    
+    // System.out.println(current);
+    // System.out.println(pathPlanner.getArmAngles(current).get(0, 0) + ", " + pathPlanner.getArmAngles(current).get(1, 0));
+    // current = pathPlanner.getNextTarget(current, target);
+
+    // for (int i=0; i<20; i++) {
+    //   System.out.println(current);
+    //   System.out.println(pathPlanner.getArmAngles(current).get(0, 0) + ", " + pathPlanner.getArmAngles(current).get(1, 0));
+    //   current = pathPlanner.getNextTarget(current, target);
+    // }
   }
 }

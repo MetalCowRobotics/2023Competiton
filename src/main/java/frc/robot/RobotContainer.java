@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -99,7 +100,7 @@ public class RobotContainer {
     private IntakeSubsystem m_IntakeSubsystem;
 
     /* Autos */
-    private double armMovementTimeout = 4;
+    private double armMovementTimeout = 2.5;
     private SendableChooser<Command> m_autoSelector;               
     
     private Command chargeStationScoreMobilityDock;
@@ -307,25 +308,40 @@ public class RobotContainer {
             new WaitCommand(0.5),
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
             // Pick up Floor Cone
+            new ParallelCommandGroup(
+            new SequentialCommandGroup(
+                new WaitCommand(0.5),
+                new ParallelRaceGroup(
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
+                    new WaitCommand(armMovementTimeout)
+                        )
+                    ),
+            new InstantCommand(() -> m_IntakeSubsystem.run()),
+            new DriveToPoint(m_swerve, -5.715, 0.1, 0)
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()
+            ),
+            //Stow
             new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
                 new WaitCommand(armMovementTimeout)
             ),
-            new InstantCommand(() -> m_IntakeSubsystem.run()),
-            new DriveToPoint(m_swerve, -5.715, 0, 180),
-            new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            //Return to Grid 
-            new DriveToPoint(m_swerve, 0, 0.483, 180),
+            //Return to Grid
+            new DriveToPoint(m_swerve, 0, -0.483, 180),
             //Eject Cone Mid
             new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.LowScoring.SHOULDER_ANGLE, Constants.ArmConstants.LowScoring.ELBOW_ANGLE,Constants.ArmConstants.LowScoring.WRIST_ANGLE),
                 new WaitCommand(armMovementTimeout)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
             //Drive to Middle of Field
-            new DriveToPoint(m_swerve, -5.715, 0.483, 180),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new DriveToPoint(m_swerve, -5.715, -0.483, 180),
             new EnableVision(m_swerve)
 
         );
@@ -343,25 +359,40 @@ public class RobotContainer {
             new WaitCommand(0.5),
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
             // Pick up Floor Cone
+            new ParallelCommandGroup(
+            new SequentialCommandGroup(
+                new WaitCommand(0.5),
+                new ParallelRaceGroup(
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
+                    new WaitCommand(armMovementTimeout)
+                        )
+                    ),
+            new InstantCommand(() -> m_IntakeSubsystem.run()),
+            new DriveToPoint(m_swerve, -5.715, -0.1, 0)
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()
+            ),
+            //Stow
             new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
                 new WaitCommand(armMovementTimeout)
             ),
-            new InstantCommand(() -> m_IntakeSubsystem.run()),
-            new DriveToPoint(m_swerve, -5.715, 0, 180),
-            new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            //Return to Grid 
-            new DriveToPoint(m_swerve, 0, -0.483, 180),
+            //Return to Grid
+            new DriveToPoint(m_swerve, 0, 0.483, 180),
             //Eject Cone Mid
             new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.LowScoring.SHOULDER_ANGLE, Constants.ArmConstants.LowScoring.ELBOW_ANGLE,Constants.ArmConstants.LowScoring.WRIST_ANGLE),
                 new WaitCommand(armMovementTimeout)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
             //Drive to Middle of Field
-            new DriveToPoint(m_swerve, -5.715, -0.483, 180),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new DriveToPoint(m_swerve, -5.715, 0.483, 180),
             new EnableVision(m_swerve)
 
         );

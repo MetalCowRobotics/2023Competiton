@@ -14,8 +14,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
-    public static final XboxController driverControls = new XboxController(0);
     public static final XboxController operatorControls = new XboxController(1);
+
 
     public static final class Swerve {
         public static final int pigeonID = 14;
@@ -51,20 +51,20 @@ public final class Constants {
         public static final boolean canCoderInvert = chosenModule.canCoderInvert;
 
         /* Swerve Current Limiting */
-        public static final int angleContinuousCurrentLimit = 25;
-        public static final int anglePeakCurrentLimit = 40;
+        public static final int angleContinuousCurrentLimit = 15;
+        public static final int anglePeakCurrentLimit = 20;
         public static final double anglePeakCurrentDuration = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
-        public static final int driveContinuousCurrentLimit = 35;
-        public static final int drivePeakCurrentLimit = 60;
+        public static final int driveContinuousCurrentLimit = 20;
+        public static final int drivePeakCurrentLimit = 30;
         public static final double drivePeakCurrentDuration = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
 
         /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
         public static final double openLoopRamp = 0.5;
-        public static final double closedLoopRamp = 0.0;
+        public static final double closedLoopRamp = 0.25;
 
         /* Angle Motor PID Values */
         public static final double angleKP = chosenModule.angleKP;
@@ -86,9 +86,10 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 0.5; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 3.3; //TODO: This must be tuned to specific robot
+        public static final double maxAutoSpeed = 1.5;
         /** Radians per Second */
-        public static final double maxAngularVelocity = Math.PI; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = (3 * Math.PI) / 2; //TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
@@ -97,40 +98,40 @@ public final class Constants {
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 10;
-            public static final int angleMotorID = 11;
-            public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(254.26);
+            public static final int driveMotorID = 4;
+            public static final int angleMotorID = 5;
+            public static final int canCoderID = 6;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(271.8);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 7;
-            public static final int angleMotorID = 8;
-            public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(328.09);
+            public static final int driveMotorID = 10;
+            public static final int angleMotorID = 11;
+            public static final int canCoderID = 12;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(348.1);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         
         /* Back Left Module - Module 2 */
         public static final class Mod2 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 1;
-            public static final int angleMotorID = 2;
-            public static final int canCoderID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(182.94);
+            public static final int driveMotorID = 7;
+            public static final int angleMotorID = 8;
+            public static final int canCoderID = 9;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(149.);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 4;
-            public static final int angleMotorID = 5;
-            public static final int canCoderID = 6;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(91.67);
+            public static final int driveMotorID = 1;
+            public static final int angleMotorID = 2;
+            public static final int canCoderID = 3;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(96.8);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -153,8 +154,45 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int INTAKE_MOTOR = 13;
-        public static final double INTAKE_SPEED = 0.3;
-        public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kB.value);
+        public static final int INTAKE_MOTOR = 16;
+        public static final double INTAKE_SPEED = 0.8;
+        public static Boolean intakeRunning = false;
+        public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kRightBumper.value);
+        public static final JoystickButton CONT_INTAKE_RUN_REV = new JoystickButton(operatorControls, XboxController.Button.kLeftBumper.value);
     }
+
+    public static final class ArmConstants {
+        public static final class SubstationCone {
+            public static final double SHOULDER_ANGLE = 61;
+            public static final double ELBOW_ANGLE = 60;
+            public static final double WRIST_ANGLE = 108;
+        }
+        public static final class SubstationCube {
+            public static final double SHOULDER_ANGLE = 56;
+            public static final double ELBOW_ANGLE = 51;
+            public static final double WRIST_ANGLE = 89;
+        }
+        public static final class GroundCone {
+            public static final double SHOULDER_ANGLE = 75;
+            public static final double ELBOW_ANGLE = -40;
+            public static final double WRIST_ANGLE = 24;
+        }
+        public static final class GroundCube {
+            public static final double SHOULDER_ANGLE = 75;
+            public static final double ELBOW_ANGLE = -40;
+            public static final double WRIST_ANGLE = 24;
+        }
+        public static final class MidScoring {
+            public static final double SHOULDER_ANGLE = 65;
+            public static final double ELBOW_ANGLE = 44;
+            public static final double WRIST_ANGLE = 65;
+        }
+        public static final class LowScoring {
+            public static final double SHOULDER_ANGLE = 0;
+            public static final double ELBOW_ANGLE = 0;
+            public static final double WRIST_ANGLE = 72;
+        }
+
+    }
+
 }

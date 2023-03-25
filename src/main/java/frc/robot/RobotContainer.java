@@ -85,6 +85,8 @@ public class RobotContainer {
     Trigger wristUp = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftX.value) > 0.7);
     Trigger wristDown = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightX.value) > 0.7);
 
+    Trigger shootHigh = new Trigger(() -> operator.getRawButtonPressed(XboxController.Button.kStart.value));
+
     Trigger drive = new Trigger(() -> 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1)
@@ -292,13 +294,13 @@ public class RobotContainer {
             new EnableVision(m_swerve)
         );
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-            alignToMiddle = new AlignToPoint(m_swerve, -0.4, 0, 180);
-            alignToLeft = new AlignToPoint(m_swerve, -0.4, 0.577, 180);
-            alignToRight = new AlignToPoint(m_swerve, -0.4, -0.577-0.15, 180);
+            alignToMiddle = new AlignToPoint(m_swerve, -0.42, 0.0, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.42, 0.5, 180);
         } else {
-            alignToMiddle = new AlignToPoint(m_swerve, -0.4, 0, 180);
-            alignToLeft = new AlignToPoint(m_swerve, -0.4, -0.577, 180);
-            alignToRight = new AlignToPoint(m_swerve, -0.4, 0.577+0.15, 180);
+            alignToMiddle = new AlignToPoint(m_swerve, -0.42, 0, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.42, 0.5, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
         }
         
         m_autoSelector.addOption("Charge Station Score + Dock", chargeStationScoreDock);
@@ -368,6 +370,22 @@ public class RobotContainer {
                 ), 
                 new InstantCommand(
                     () -> m_wristSubsystem.setTarget(Constants.ArmConstants.MidScoring.WRIST_ANGLE)
+                ),
+                new InstantCommand(
+                    () -> m_IntakeSubsystem.stop()
+                )
+            )
+        );
+        shootHigh.onTrue(
+            new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> m_shoulderSubsystem.setTarget(Constants.ArmConstants.HighScoring.SHOULDER_ANGLE)
+                ),
+                new InstantCommand(
+                    () -> m_elbowSubsystem.setTarget(Constants.ArmConstants.HighScoring.ELBOW_ANGLE)
+                ), 
+                new InstantCommand(
+                    () -> m_wristSubsystem.setTarget(Constants.ArmConstants.HighScoring.WRIST_ANGLE)
                 ),
                 new InstantCommand(
                     () -> m_IntakeSubsystem.stop()

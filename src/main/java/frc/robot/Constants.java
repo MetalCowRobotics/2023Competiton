@@ -154,7 +154,7 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final int INTAKE_MOTOR = 16;
-        public static final double INTAKE_SPEED = 0.8;
+        public static final double INTAKE_SPEED = 0.95;
         public static Boolean intakeRunning = false;
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kRightBumper.value);
         public static final JoystickButton CONT_INTAKE_RUN_REV = new JoystickButton(operatorControls, XboxController.Button.kLeftBumper.value);
@@ -190,6 +190,11 @@ public final class Constants {
             public static final double SHOULDER_ANGLE = 0;
             public static final double ELBOW_ANGLE = 0;
             public static final double WRIST_ANGLE = 72;
+        }
+        public static final class HighScoring {
+            public static final double SHOULDER_ANGLE = 110;
+            public static final double ELBOW_ANGLE = 80;
+            public static final double WRIST_ANGLE = 45;
         }
 
     }

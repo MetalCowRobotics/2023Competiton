@@ -205,40 +205,32 @@ public class Swerve extends SubsystemBase {
             if (yaw < 0) {
                 yaw += 360;
             }
-            double correctionAngle = 0;
-            if (yaw <= 90) {
-                correctionAngle = 90 - yaw;
-            } else if (yaw <= 180) {
-                correctionAngle = 180 - yaw;
-            } else if (yaw <= 270) {
-                correctionAngle = 270 - yaw;
-            } else if (yaw <= 360) {
-                correctionAngle = 360 - yaw; // 360 - yaw + 90
-            }
+            SmartDashboard.putNumber("yaw for vision", yaw);
 
-            Rotation2d correction = Rotation2d.fromDegrees(-correctionAngle);
-            xyPosition = xyPosition.rotateBy(correction);
+            Rotation2d correction = Rotation2d.fromDegrees(yaw);
+            Translation2d cameraPose = new Translation2d(Units.inchesToMeters(8), -Units.inchesToMeters(7.75));
+            cameraPose = cameraPose.rotateBy(correction);
+
+            SmartDashboard.putNumber("robot center x", cameraPose.getX());
+            SmartDashboard.putNumber("robot center y", cameraPose.getY());
             
-            // if (yaw < 180) {
-            //     xyPosition = new Translation2d(xyPosition.getY(), xyPosition.getX());
-            // }
-            Pose2d pose = new Pose2d(xyPosition.getY() + Units.inchesToMeters(10.5), -xyPosition.getX() - Units.inchesToMeters(4.25), getYaw());
-            estimator.addVisionMeasurement(pose, time);
+            double xHeading = Math.toRadians(180 + yaw);
+            double yHeading = Math.toRadians(270 + yaw);
+
+            Pose2d pose = new Pose2d(-(xyPosition.getX() * Math.cos(xHeading) + xyPosition.getY() * Math.cos(yHeading)), -(xyPosition.getX() * Math.sin(xHeading) + xyPosition.getY() * Math.sin(yHeading)), getYaw());
+
             if (lastTrackedTarget != target.getFiducialId()) {
                 if (Math.hypot(pose.getX(), pose.getY()) < ODOMETRY_RESET_DISTANCE_THRESHOLD) {
                     resetOdometry(pose);
+                    lastTrackedTarget = target.getFiducialId();
                 }
             }
-            // if (lastObservedTime - Timer.getFPGATimestamp() > ODOMETRY_RESET_TIME_THRESHOLD) {
-            //     resetOdometry(pose);
-            // }
+            
             lastObservedTime = Timer.getFPGATimestamp();
-            lastTrackedTarget = target.getFiducialId();
+            // lastTrackedTarget = target.getFiducialId();
+
             SmartDashboard.putNumber("x from vision", pose.getX());
             SmartDashboard.putNumber("y from vision", pose.getY());
-        // }
-        // SmartDashboard.putNumber("x from vision", -99);
-        // SmartDashboard.putNumber("y from vision", -99);
     }
 
     @Override
@@ -251,7 +243,7 @@ public class Swerve extends SubsystemBase {
             try {
                 addVisionMeasurement();
             } catch (Exception e) {
-                
+                lastTrackedTarget = -1;
             }
         }
         SmartDashboard.putBoolean("vision enabled", visionEnabled);

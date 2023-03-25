@@ -2,19 +2,22 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
-public class AlignToPoint extends CommandBase {
+public class AlignToSubstation extends CommandBase {
     
     private Swerve m_swerve;
+
     private PIDController anglePIDController = new PIDController(0.004, 0, 0.000);
     private PIDController xController = new PIDController(.8, 0, 0);
     private PIDController yController = new PIDController(.8, 0, 0);
+
     double targetX;
     double targetY;
-    double targetYaw;
+    double targetYaw = 0;
 
     double x;
     double y;
@@ -22,11 +25,10 @@ public class AlignToPoint extends CommandBase {
 
     private double tolerance = 0.03;
 
-    public AlignToPoint(Swerve swerve, double targetX, double targetY, double targetYaw) {
+    public AlignToSubstation(Swerve swerve, double targetX, double targetY) {
         this.m_swerve = swerve;
         this.targetX = targetX;
         this.targetY = targetY;
-        this.targetYaw = targetYaw;
         addRequirements(m_swerve);
     }
 
@@ -34,44 +36,31 @@ public class AlignToPoint extends CommandBase {
     public void execute() {
         x = m_swerve.getPose().getX();
         y = m_swerve.getPose().getY();
-        // if (moveToCenter.getAsBoolean()) {
-        //     targetX = -0.7;
-        //     targetY = 0.00;
-        // }
-        // if (moveToRight.getAsBoolean()) {
-        //     targetX = -0.7;
-        //     targetY = -0.6;
-        // }
-        // if (moveToLeft.getAsBoolean()) {
-        //     targetX = -0.7;
-        //     targetY = 0.6;
-        //     // System.out.println("MOVING LEFT");
-        // }
 
         xController.setSetpoint(targetX);
         yController.setSetpoint(targetY);
         anglePIDController.setSetpoint(targetYaw);
+        anglePIDController.setTolerance(1, 1);
 
         yaw = m_swerve.getYaw().getDegrees();
 
         yaw = yaw % 360;
+
         if (yaw < 0) {
             yaw += 360;
         }
 
-        if (targetYaw == 0) {
-            if (yaw > 180) {
-                anglePIDController.setSetpoint(360);
-            } else {
-                anglePIDController.setSetpoint(0);
-            }
+        if (yaw > 180) {
+            anglePIDController.setSetpoint(360);
+        } else {
+            anglePIDController.setSetpoint(0);
         }
 
         double rotation = anglePIDController.calculate(yaw);
         double xCorrection = xController.calculate(x);
         double yCorrection = yController.calculate(y);
 
-        if (Math.abs(yaw - 180) < 2) {
+        if (anglePIDController.atSetpoint()) {
             rotation = 0;
         }
         if (Math.abs(targetX - x) < tolerance) {
@@ -91,7 +80,7 @@ public class AlignToPoint extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(yaw - 180) < 2) {
+        if (anglePIDController.atSetpoint()) {
             if (Math.abs(targetX - x) < tolerance) {
                 if (Math.abs(targetY - y) < tolerance) {
                     return true;
@@ -110,5 +99,4 @@ public class AlignToPoint extends CommandBase {
             false
         );
     }
-
 }

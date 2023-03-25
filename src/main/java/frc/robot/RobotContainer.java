@@ -110,8 +110,8 @@ public class RobotContainer {
     private Command substationScoreMobilityBlue;
     private Command cableRunScoreMobility;
     private Command armTest;
-    private Command twoPieceAutoBlue;
-    private Command twoPieceAutoRed;
+    private Command twoPieceAutoBlueMidLow;
+    private Command twoPieceAutoBlueMidMid;
     
     private Command alignToMiddle;
     private Command alignToLeft;
@@ -295,7 +295,58 @@ public class RobotContainer {
             new EnableVision(m_swerve)
         );
 
-        twoPieceAutoBlue = new SequentialCommandGroup(
+        twoPieceAutoBlueMidLow = new SequentialCommandGroup(
+            new DisableVision(m_swerve),
+            new InstantCommand(() -> m_swerve.zeroGyro(180)),
+            new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
+            // Prepare and Shoot Cube
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0,-2),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.run()),
+            new WaitCommand(0.5),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            // Pick up Floor Cone
+            new ParallelCommandGroup(
+            new SequentialCommandGroup(
+                new WaitCommand(0.5),
+                new ParallelRaceGroup(
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
+                    new WaitCommand(armMovementTimeout)
+                        )
+                    ),
+            new InstantCommand(() -> m_IntakeSubsystem.run()),
+            new DriveToPoint(m_swerve, -5.715, 0.1, 0)
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()
+            ),
+            //Stow
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
+                new WaitCommand(armMovementTimeout)
+            ),
+            //Return to Grid
+            new DriveToPoint(m_swerve, 0, -0.483, 180),
+            //Eject Cone Low
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.LowScoring.SHOULDER_ANGLE, Constants.ArmConstants.LowScoring.ELBOW_ANGLE,Constants.ArmConstants.LowScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+            new WaitCommand(0.5),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            //Stow
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
+                new WaitCommand(armMovementTimeout)
+            ),
+            //Drive to Middle of Field
+            new DriveToPoint(m_swerve, -5.715, -0.483, 180),
+            new EnableVision(m_swerve)
+        );
+
+        twoPieceAutoBlueMidMid = new SequentialCommandGroup(
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
@@ -330,72 +381,21 @@ public class RobotContainer {
             new DriveToPoint(m_swerve, 0, -0.483, 180),
             //Eject Cone Mid
             new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.LowScoring.SHOULDER_ANGLE, Constants.ArmConstants.LowScoring.ELBOW_ANGLE,Constants.ArmConstants.LowScoring.WRIST_ANGLE),
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.MidScoring.SHOULDER_ANGLE, Constants.ArmConstants.MidScoring.ELBOW_ANGLE,Constants.ArmConstants.MidScoring.WRIST_ANGLE),
                 new WaitCommand(armMovementTimeout)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            //Drive to Middle of Field
+            //Stow
             new ParallelRaceGroup(
                 new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
                 new WaitCommand(armMovementTimeout)
             ),
+            //Drive to Middle of Field
             new DriveToPoint(m_swerve, -5.715, -0.483, 180),
             new EnableVision(m_swerve)
-
         );
-        
-        twoPieceAutoRed = new SequentialCommandGroup(
-            // Auto StartUp
-            new DisableVision(m_swerve),
-            new InstantCommand(() -> m_swerve.zeroGyro(180)),
-            new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
-            // Prepare and Shoot Cube
-            new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0,-2),
-                new WaitCommand(armMovementTimeout)
-            ),
-            new InstantCommand(() -> m_IntakeSubsystem.run()),
-            new WaitCommand(0.5),
-            new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            // Pick up Floor Cone
-            new ParallelCommandGroup(
-            new DriveToPoint(m_swerve, -5.715, -0.1, 0),
-            new SequentialCommandGroup(
-                new WaitCommand(0.5),
-                new ParallelRaceGroup(
-                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
-                    new WaitCommand(armMovementTimeout)
-                    ),
-                new InstantCommand(() -> m_IntakeSubsystem.run())
-                )
-            ),
-            //Stow
-            new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
-                new WaitCommand(armMovementTimeout)
-            ),
-            //Return to Grid
-            new DriveToPoint(m_swerve, 0, 0.483, 180),
-            //Eject Cone Mid
-            new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.LowScoring.SHOULDER_ANGLE, Constants.ArmConstants.LowScoring.ELBOW_ANGLE,Constants.ArmConstants.LowScoring.WRIST_ANGLE),
-                new WaitCommand(armMovementTimeout)
-            ),
-            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
-            new WaitCommand(0.5),
-            new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            //Drive to Middle of Field
-            new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
-                new WaitCommand(armMovementTimeout)
-            ),
-            new DriveToPoint(m_swerve, -5.715, 0.483, 180),
-            new EnableVision(m_swerve)
-        );
-
 
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
             alignToMiddle = new AlignToPoint(m_swerve, -0.4, 0, 180);
@@ -415,8 +415,8 @@ public class RobotContainer {
         m_autoSelector.addOption("Red Substation Score + Mobility + Dock", substationScoreMobilityDockRed);
         m_autoSelector.addOption("Blue Substation Score + Mobility", substationScoreMobilityBlue);
         m_autoSelector.addOption("Cable Run Score Mobility", cableRunScoreMobility);
-        m_autoSelector.addOption("Blue Two Piece Auto", twoPieceAutoBlue);
-        m_autoSelector.addOption("Red Two Piece Auto", twoPieceAutoRed);
+        m_autoSelector.addOption("Blue Two Piece Mid Low", twoPieceAutoBlueMidLow);
+        m_autoSelector.addOption("Blue Two Piece Mid Mid", twoPieceAutoBlueMidMid);
         m_autoSelector.addOption("arm test", armTest);
         m_autoSelector.setDefaultOption("None", noAuto);
         SmartDashboard.putData(m_autoSelector);        

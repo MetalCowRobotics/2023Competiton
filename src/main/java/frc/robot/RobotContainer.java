@@ -120,7 +120,6 @@ public class RobotContainer {
 
     private Command noAuto = new InstantCommand(() -> m_swerve.zeroGyro(180));
 
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         
@@ -406,8 +405,6 @@ public class RobotContainer {
             alignToLeft = new AlignToPoint(m_swerve, -0.4, -0.577, 180);
             alignToRight = new AlignToPoint(m_swerve, -0.4, 0.577+0.15, 180);
         }
-
-
         
         m_autoSelector.addOption("Charge Station Score + Dock", chargeStationScoreDock);
         m_autoSelector.addOption("Charge Station Score + Mobility + Dock", chargeStationScoreMobilityDock);
@@ -440,7 +437,6 @@ public class RobotContainer {
                 () -> autoLevel.getAsBoolean()
             )
         );
-        
 
         zeroGyro.onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
         moveToCenter.onTrue(alignToMiddle);

@@ -6,6 +6,7 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -59,6 +60,8 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
 
         public String subsystemName;
     }
+
+
 
     protected ServoMotorSubsystem(ServoMotorSubsystemConfig config) {
         m_motor = new CANSparkMax(config.motorCanID, CANSparkMaxLowLevel.MotorType.kBrushless);

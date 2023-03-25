@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTREConfigs;
 import frc.robot.Constants.IntakeConstants;
@@ -18,6 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private TalonSRX intakeMotor = new TalonSRX(16);
     private double motorSpeed = 0;
     CTREConfigs configs = new CTREConfigs();
+    
 
     // private static final Spark m_intakeRoller = new Spark(INTAKE_ROLLER_CAN_NUM
 
@@ -53,6 +54,20 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         intakeMotor.set(TalonSRXControlMode.PercentOutput, motorSpeed);
+    }
+DigitalInput input = new DigitalInput(0);
+DigitalInput input2 = new DigitalInput(1);
+    public boolean identify() {
+        if (input.get()){
+            System.out.println("Cube");
+
+        }
+
+        if (input2.get()){
+            System.out.println("Cone");
+            
+        }
+        return true;
     }
 }
 

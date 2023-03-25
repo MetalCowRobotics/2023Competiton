@@ -347,6 +347,7 @@ public class RobotContainer {
         );
         
         twoPieceAutoRed = new SequentialCommandGroup(
+            // Auto StartUp
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
@@ -360,19 +361,18 @@ public class RobotContainer {
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
             // Pick up Floor Cone
             new ParallelCommandGroup(
+            new DriveToPoint(m_swerve, -5.715, -0.1, 0),
             new SequentialCommandGroup(
                 new WaitCommand(0.5),
                 new ParallelRaceGroup(
                     new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
                     new WaitCommand(armMovementTimeout)
-                        )
                     ),
-            new InstantCommand(() -> m_IntakeSubsystem.run()),
-            new DriveToPoint(m_swerve, -5.715, -0.1, 0)
-            ),
-            new InstantCommand(() -> m_IntakeSubsystem.stop()
+                new InstantCommand(() -> m_IntakeSubsystem.run())
+                )
             ),
             //Stow
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
             new ParallelRaceGroup(
                 new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
                 new WaitCommand(armMovementTimeout)
@@ -394,7 +394,6 @@ public class RobotContainer {
             ),
             new DriveToPoint(m_swerve, -5.715, 0.483, 180),
             new EnableVision(m_swerve)
-
         );
 
 

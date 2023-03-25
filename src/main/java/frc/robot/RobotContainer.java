@@ -59,6 +59,7 @@ public class RobotContainer {
     private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton moveToRight = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton autoLevel = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton autoBalanceButton = new JoystickButton(driver, XboxController.Button.kStart.value);
     
     /* Operator Buttons */
     private final JoystickButton cubeSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
@@ -113,6 +114,7 @@ public class RobotContainer {
     private Command alignToMiddle;
     private Command alignToLeft;
     private Command alignToRight;
+    private Command autoBalance;
     private Command alignToSubstationRight;
 
     private Command noAuto = new InstantCommand(() -> m_swerve.zeroGyro(180));
@@ -336,6 +338,7 @@ public class RobotContainer {
         moveToCenter.onTrue(alignToMiddle);
         moveToLeft.onTrue(alignToLeft);
         moveToRight.onTrue(alignToRight);
+        autoBalanceButton.onTrue(autoBalance);
 
         drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft, alignToMiddle, alignToRight)));
 

@@ -193,9 +193,9 @@ public final class Constants {
             public static final double WRIST_ANGLE = 72;
         }
         public static final class HighScoring {
-            public static final double SHOULDER_ANGLE = 70;
-            public static final double ELBOW_ANGLE = 52;
-            public static final double WRIST_ANGLE = 9;
+            public static final double SHOULDER_ANGLE = 110;
+            public static final double ELBOW_ANGLE = 80;
+            public static final double WRIST_ANGLE = 63;
         }
 
     }

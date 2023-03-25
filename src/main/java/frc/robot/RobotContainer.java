@@ -1,12 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,26 +15,22 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.AlignToPoint;
 import frc.robot.commands.ArmToAngles;
-import frc.robot.commands.ArmToPoint;
 import frc.robot.commands.DisableVision;
 import frc.robot.commands.DriveToPoint;
 import frc.robot.commands.EnableVision;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.ToggleColor;
 import frc.robot.subsystems.ElbowSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ServoMotorSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.WristSubsystem;
-import frc.robot.util.Point;
-
-import com.revrobotics.CANSparkMax;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,7 +49,7 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kBack.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton moveToCenter = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kB.value);
@@ -86,6 +81,8 @@ public class RobotContainer {
     Trigger wristUp = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftX.value) > 0.7);
     Trigger wristDown = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightX.value) > 0.7);
 
+    Trigger toggleLED = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kY.value));
+
     Trigger drive = new Trigger(() -> 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1)
@@ -98,7 +95,7 @@ public class RobotContainer {
     private ElbowSubsystem m_elbowSubsystem;
     private WristSubsystem m_wristSubsystem;
     private IntakeSubsystem m_IntakeSubsystem;
-
+    private LEDSubsystem m_LEDSubsystem;
     /* Autos */
     private double armMovementTimeout = 2.5;
     private SendableChooser<Command> m_autoSelector;               
@@ -117,6 +114,7 @@ public class RobotContainer {
     private Command alignToLeft;
     private Command alignToRight;
     private Command alignToSubstationRight;
+    private Command changeColor;
 
     private Command noAuto = new InstantCommand(() -> m_swerve.zeroGyro(180));
 
@@ -124,6 +122,7 @@ public class RobotContainer {
     public RobotContainer() {
         
         m_swerve = new Swerve();
+        m_LEDSubsystem = new LEDSubsystem(1);
         m_IntakeSubsystem = new IntakeSubsystem();
         m_autoSelector = new SendableChooser<Command>();
 
@@ -442,6 +441,8 @@ public class RobotContainer {
         moveToCenter.onTrue(alignToMiddle);
         moveToLeft.onTrue(alignToLeft);
         moveToRight.onTrue(alignToRight);
+        changeColor = new ToggleColor(m_LEDSubsystem);
+        toggleLED.onTrue(changeColor);
 
         drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft, alignToMiddle, alignToRight)));
 
@@ -463,6 +464,7 @@ public class RobotContainer {
 
         sprint.onTrue(new InstantCommand(() -> m_swerve.setSprint()));
         sprint.onFalse(new InstantCommand(() -> m_swerve.setBase()));
+
 
         midScoringPosition.onTrue(
             new SequentialCommandGroup(

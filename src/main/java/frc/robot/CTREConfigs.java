@@ -23,7 +23,7 @@ public final class CTREConfigs {
         intakeMotorConfig.continuousCurrentLimit = 10;
         intakeMotorConfig.peakCurrentLimit = 15;
         intakeMotorConfig.peakCurrentDuration = 100;
-        intakeMotorConfig.openloopRamp = 0.5;
+        intakeMotorConfig.openloopRamp = 0.1;
 
         /* Swerve Angle Motor Configurations */
         SupplyCurrentLimitConfiguration angleSupplyLimit = new SupplyCurrentLimitConfiguration(

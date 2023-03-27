@@ -294,6 +294,7 @@ public class RobotContainer {
         );
 
         twoPieceAutoBlueMidLow = new SequentialCommandGroup(
+            //Auto Set Up
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
@@ -312,9 +313,9 @@ public class RobotContainer {
                 new ParallelRaceGroup(
                     new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
                     new WaitCommand(armMovementTimeout)
-                        )
                     ),
-            new InstantCommand(() -> m_IntakeSubsystem.run()),
+                new InstantCommand(() -> m_IntakeSubsystem.run())
+                ),
             new DriveToPoint(m_swerve, -5.715, 0.1, 0)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.stop()
@@ -345,6 +346,7 @@ public class RobotContainer {
         );
 
         twoPieceAutoBlueMidMid = new SequentialCommandGroup(
+            // Auto Set Up
             new DisableVision(m_swerve),
             new InstantCommand(() -> m_swerve.zeroGyro(180)),
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
@@ -363,9 +365,9 @@ public class RobotContainer {
                 new ParallelRaceGroup(
                     new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCone.SHOULDER_ANGLE, Constants.ArmConstants.GroundCone.ELBOW_ANGLE, Constants.ArmConstants.GroundCone.WRIST_ANGLE),
                     new WaitCommand(armMovementTimeout)
-                        )
                     ),
-            new InstantCommand(() -> m_IntakeSubsystem.run()),
+                new InstantCommand(() -> m_IntakeSubsystem.run())
+                ),
             new DriveToPoint(m_swerve, -5.715, 0.1, 0)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.stop()
@@ -385,14 +387,18 @@ public class RobotContainer {
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            //Stow
-            new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
-                new WaitCommand(armMovementTimeout)
-            ),
-            //Drive to Middle of Field
+            //Stow and Drive to Middle of Field
+            new ParallelCommandGroup(
+            new SequentialCommandGroup(
+                new WaitCommand(0.3),
+                new ParallelRaceGroup(
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
+                    new WaitCommand(armMovementTimeout)
+                        )
+                    ),
             new DriveToPoint(m_swerve, -5.715, -0.483, 180),
             new EnableVision(m_swerve)
+            )
         );
 
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {

@@ -71,7 +71,7 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
         m_motor.setSmartCurrentLimit(config.stallCurentLimit, config.freeCurentLimit);
 
         encoder = m_motor.getEncoder();
-        encoder.setPosition(0);
+        // encoder.setPosition(0);
         //encoder.setInverted(config.inverted);
 
         maxSetpoint = config.maxRPM / 5820;

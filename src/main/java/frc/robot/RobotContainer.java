@@ -39,6 +39,7 @@ import frc.robot.subsystems.WristSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    /*WaitCommand time = new WaitCommand(3.0);*/
     /* Controllers */
     private final Joystick driver = new Joystick(0);
    private final Joystick operator = new Joystick(1);
@@ -49,7 +50,7 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kBack.value);
+    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton moveToCenter = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kB.value);
@@ -57,8 +58,8 @@ public class RobotContainer {
     private final JoystickButton autoLevel = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     
     /* Operator Buttons */
-    private final JoystickButton cubeSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-    private final JoystickButton coneSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton cubeSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton coneSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
     // private final JoystickButton cubeFloorIntakePosition = new JoystickButton(operator, XboxController.Axis.kLeftY);
     // private final JoystickButton coneFloorIntakePosition = new JoystickButton(operator, XboxController.Button.kX.value);
     private final JoystickButton lowScoringPosition = new JoystickButton(operator, XboxController.Button.kB.value);
@@ -68,8 +69,8 @@ public class RobotContainer {
     Trigger crawl = new Trigger(() -> driver.getRawAxis(XboxController.Axis.kLeftTrigger.value) > 0.8);
     Trigger sprint = new Trigger(() -> driver.getRawAxis(XboxController.Axis.kRightTrigger.value) > 0.8);
 
-    Trigger cubeFloorIntakePosition = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightY.value) > 0.8);
-    Trigger coneFloorIntakePosition = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftY.value) > 0.8);
+    Trigger cubeFloorIntakePosition = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftY.value) > 0.8);
+    Trigger coneFloorIntakePosition = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightY.value) > 0.8);
 
     Trigger intakeForward = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftTrigger.value) > 0.7);
     Trigger intakeReverse = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightTrigger.value) > 0.7);
@@ -81,7 +82,8 @@ public class RobotContainer {
     Trigger wristUp = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftX.value) > 0.7);
     Trigger wristDown = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightX.value) > 0.7);
 
-    Trigger toggleLED = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kY.value));
+    Trigger shootHigh = new Trigger(() -> operator.getRawButtonPressed(XboxController.Button.kStart.value));
+    // Trigger toggleLED = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kY.value));
 
     Trigger drive = new Trigger(() -> 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
@@ -96,6 +98,7 @@ public class RobotContainer {
     private WristSubsystem m_wristSubsystem;
     private IntakeSubsystem m_IntakeSubsystem;
     private LEDSubsystem m_LEDSubsystem;
+    
     /* Autos */
     private double armMovementTimeout = 2.5;
     private SendableChooser<Command> m_autoSelector;               
@@ -117,6 +120,9 @@ public class RobotContainer {
     private Command changeColor;
 
     private Command noAuto = new InstantCommand(() -> m_swerve.zeroGyro(180));
+
+    /*change the color
+    Trigger changeLightColor = new Trigger(() -> m_IntakeSubsystem.Identification());*/
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -442,13 +448,14 @@ public class RobotContainer {
                 () -> autoLevel.getAsBoolean()
             )
         );
-
+        
+        
         zeroGyro.onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
         moveToCenter.onTrue(alignToMiddle);
         moveToLeft.onTrue(alignToLeft);
         moveToRight.onTrue(alignToRight);
-        changeColor = new ToggleColor(m_LEDSubsystem);
-        toggleLED.onTrue(changeColor);
+        // changeColor = new ToggleColor(m_LEDSubsystem);
+        //toggleLED.onTrue(changeColor);
 
         drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft, alignToMiddle, alignToRight)));
 
@@ -500,7 +507,7 @@ public class RobotContainer {
                     () -> m_wristSubsystem.setTarget(Constants.ArmConstants.GroundCone.WRIST_ANGLE)
                 ),
                 new InstantCommand(
-                    () -> m_IntakeSubsystem.runReverse()
+                    () -> m_IntakeSubsystem.run()
                 )
             )
         );
@@ -516,7 +523,7 @@ public class RobotContainer {
                     () -> m_wristSubsystem.setTarget(Constants.ArmConstants.GroundCube.WRIST_ANGLE)
                 ),
                 new InstantCommand(
-                    () -> m_IntakeSubsystem.run()
+                    () -> m_IntakeSubsystem.runReverse()
                 )
             )
         );
@@ -548,7 +555,7 @@ public class RobotContainer {
                     () -> m_wristSubsystem.setTarget(Constants.ArmConstants.SubstationCone.WRIST_ANGLE)
                 ), 
                 new InstantCommand(
-                    () -> m_IntakeSubsystem.runReverse()
+                    () -> m_IntakeSubsystem.run()
                 )
             )
         );
@@ -564,7 +571,7 @@ public class RobotContainer {
                     () -> m_wristSubsystem.setTarget(Constants.ArmConstants.SubstationCube.WRIST_ANGLE)
                 ), 
                 new InstantCommand(
-                    () -> m_IntakeSubsystem.run()
+                    () -> m_IntakeSubsystem.runReverse()
                 )
             )
         );
@@ -577,7 +584,7 @@ public class RobotContainer {
                     () -> m_elbowSubsystem.setTarget(0)
                 ), 
                 new InstantCommand(
-                    () -> m_wristSubsystem.setTarget(0)
+                    () -> m_wristSubsystem.setTarget(-5.22)
                 ), 
                 new InstantCommand(
                     () -> m_IntakeSubsystem.stop()
@@ -585,6 +592,20 @@ public class RobotContainer {
             )
         );
         m_IntakeSubsystem.stop();
+
+        shootHigh.onTrue(
+            new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> m_shoulderSubsystem.setTarget(Constants.ArmConstants.HighScoring.SHOULDER_ANGLE)
+                ),
+                new InstantCommand(
+                    () -> m_elbowSubsystem.setTarget(Constants.ArmConstants.HighScoring.ELBOW_ANGLE)
+                ), 
+                new InstantCommand(
+                    () -> m_wristSubsystem.setTarget(Constants.ArmConstants.HighScoring.WRIST_ANGLE)
+                )
+            )
+        );
     }
 
     public Command getAutonomousCommand() {

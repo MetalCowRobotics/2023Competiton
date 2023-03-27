@@ -30,6 +30,7 @@ public final class Constants {
         public static final double wheelBase = Units.inchesToMeters(21.25); //TODO: This must be tuned to specific robot
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
+
         /* Swerve Kinematics 
          * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
          public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
@@ -154,7 +155,7 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final int INTAKE_MOTOR = 16;
-        public static final double INTAKE_SPEED = 0.8;
+        public static final double INTAKE_SPEED = 0.95;
         public static Boolean intakeRunning = false;
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kRightBumper.value);
         public static final JoystickButton CONT_INTAKE_RUN_REV = new JoystickButton(operatorControls, XboxController.Button.kLeftBumper.value);
@@ -162,34 +163,39 @@ public final class Constants {
 
     public static final class ArmConstants {
         public static final class SubstationCone {
-            public static final double SHOULDER_ANGLE = 61;
-            public static final double ELBOW_ANGLE = 60;
-            public static final double WRIST_ANGLE = 108;
+            public static final double SHOULDER_ANGLE = 58.09;
+            public static final double ELBOW_ANGLE =66.3;
+            public static final double WRIST_ANGLE = 107;
         }
         public static final class SubstationCube {
-            public static final double SHOULDER_ANGLE = 56;
-            public static final double ELBOW_ANGLE = 51;
-            public static final double WRIST_ANGLE = 89;
+            public static final double SHOULDER_ANGLE = 46.3;
+            public static final double ELBOW_ANGLE = 42;
+            public static final double WRIST_ANGLE = 65;
         }
         public static final class GroundCone {
-            public static final double SHOULDER_ANGLE = 75;
-            public static final double ELBOW_ANGLE = -40;
-            public static final double WRIST_ANGLE = 24;
+            public static final double SHOULDER_ANGLE = 96.2;
+            public static final double ELBOW_ANGLE = -50;
+            public static final double WRIST_ANGLE = -9;
         }
         public static final class GroundCube {
-            public static final double SHOULDER_ANGLE = 75;
-            public static final double ELBOW_ANGLE = -40;
-            public static final double WRIST_ANGLE = 24;
+            public static final double SHOULDER_ANGLE = 102;
+            public static final double ELBOW_ANGLE = -52;
+            public static final double WRIST_ANGLE = -4;
         }
         public static final class MidScoring {
-            public static final double SHOULDER_ANGLE = 65;
-            public static final double ELBOW_ANGLE = 44;
-            public static final double WRIST_ANGLE = 65;
+            public static final double SHOULDER_ANGLE = 64;
+            public static final double ELBOW_ANGLE = 43;
+            public static final double WRIST_ANGLE = 90;
         }
         public static final class LowScoring {
             public static final double SHOULDER_ANGLE = 0;
             public static final double ELBOW_ANGLE = 0;
             public static final double WRIST_ANGLE = 72;
+        }
+        public static final class HighScoring {
+            public static final double SHOULDER_ANGLE = 110;
+            public static final double ELBOW_ANGLE = 80;
+            public static final double WRIST_ANGLE = 46;
         }
 
     }

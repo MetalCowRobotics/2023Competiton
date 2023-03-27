@@ -306,7 +306,7 @@ public class RobotContainer {
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
             // Prepare and Shoot Cube
             new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0,-2),
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0,0),
                 new WaitCommand(armMovementTimeout)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.run()),
@@ -322,7 +322,7 @@ public class RobotContainer {
                     ),
                 new InstantCommand(() -> m_IntakeSubsystem.run())
                 ),
-            new DriveToPoint(m_swerve, -5.715, 0.1, 0)
+            new DriveToPoint(m_swerve, -5.2, 0, 0)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.stop()
             ),
@@ -347,7 +347,7 @@ public class RobotContainer {
                 new WaitCommand(armMovementTimeout)
             ),
             //Drive to Middle of Field
-            new DriveToPoint(m_swerve, -5.715, -0.483, 180),
+            new DriveToPoint(m_swerve, -5.2, -0.483, 180),
             new EnableVision(m_swerve)
         );
 
@@ -358,7 +358,7 @@ public class RobotContainer {
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, m_swerve.getYaw()))),
             // Prepare and Shoot Cube
             new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0,-2),
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0, 0,0),
                 new WaitCommand(armMovementTimeout)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.run()),
@@ -374,7 +374,7 @@ public class RobotContainer {
                     ),
                 new InstantCommand(() -> m_IntakeSubsystem.run())
                 ),
-            new DriveToPoint(m_swerve, -5.715, 0.1, 0)
+            new DriveToPoint(m_swerve, -5.2, 0, 0)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.stop()
             ),
@@ -402,9 +402,9 @@ public class RobotContainer {
                     new WaitCommand(armMovementTimeout)
                         )
                     ),
-            new DriveToPoint(m_swerve, -5.715, -0.483, 180),
+            new DriveToPoint(m_swerve, -5.2, -0.483, 180)
+            ),
             new EnableVision(m_swerve)
-            )
         );
 
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {

@@ -98,7 +98,7 @@ public class RobotContainer {
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1)
     );
-    Trigger stopIntakeOnPickup = new Trigger(() -> m_IntakeSubsystem.coneInIntake() || m_IntakeSubsystem.cubeInIntake());
+    Trigger stopIntakeOnPickup = new Trigger(() -> m_IntakeSubsystem.coneInIntake());
     // private final JoystickButton stopstow = new JoystickButton(operator, XboxController.Button.kB.value);
     
     /* Autos */
@@ -317,10 +317,6 @@ public class RobotContainer {
         m_autoSelector.addOption("arm test", armTest);
         m_autoSelector.setDefaultOption("None", noAuto);
         SmartDashboard.putData(m_autoSelector);
-
-        stopIntakeOnPickup.onTrue(
-            new InstantCommand(() -> m_IntakeSubsystem.stop())
-        );
     }
 
     /**
@@ -330,6 +326,9 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     public void configureButtonBindings() {
+        stopIntakeOnPickup.onTrue(
+            new InstantCommand(() -> m_IntakeSubsystem.stop())
+        );
         /* Driver Buttons */
         m_swerve.setDefaultCommand(
             new TeleopSwerve(

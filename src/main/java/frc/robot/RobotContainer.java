@@ -409,48 +409,42 @@ public class RobotContainer {
             new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
             new WaitCommand(0.5),
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            //Drive Out for Cube
+            //Drive Out Past Cube
             new ParallelCommandGroup(
-            new SequentialCommandGroup(
-                new WaitCommand(0.5),
-                new ParallelRaceGroup(
-                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
-                    new WaitCommand(armMovementTimeout)
+                new DriveToPoint(m_swerve, Constants.CoordinateConstants.BlueField.PoofsStep1X, Constants.CoordinateConstants.BlueField.PoofsStep1Y, 180),
+                new SequentialCommandGroup(
+                    new WaitCommand(0.5),
+                    new ParallelRaceGroup(
+                        new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
+                        new WaitCommand(armMovementTimeout)
                     )
-                ),
-            new DriveToPoint(m_swerve, -6.67, -0.1, 180)
+                )
             ),
-            new DriveToPoint(m_swerve, -6.67, 0.87, 180),
+            //Drive Behind Cube
+            new DriveToPoint(m_swerve, Constants.CoordinateConstants.BlueField.PoofsStep2X, Constants.CoordinateConstants.BlueField.PoofsStep2Y, 180),
             new ParallelRaceGroup(
                 new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.GroundCube.SHOULDER_ANGLE, Constants.ArmConstants.GroundCube.ELBOW_ANGLE, Constants.ArmConstants.GroundCube.WRIST_ANGLE),
                 new WaitCommand(armMovementTimeout)
             ),
+            //Drive Into Cube and to Grid
             new ParallelCommandGroup(
+                new DriveToPoint(m_swerve, Constants.CoordinateConstants.BlueField.PoofsStep3X, Constants.CoordinateConstants.BlueField.PoofsStep3Y, 180),
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
-                    new WaitCommand(1.0),
+                    new WaitCommand(1.5),
                     new InstantCommand(() -> m_IntakeSubsystem.stop()),
                     new ParallelRaceGroup(
                         new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
                         new WaitCommand(armMovementTimeout)
                     )
-                ),
-            new DriveToPoint(m_swerve, 0, 0.87, 180)
+                )
             ),
-            //Eject Cube Low
-            new ParallelRaceGroup(                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.LowScoring.SHOULDER_ANGLE, Constants.ArmConstants.LowScoring.ELBOW_ANGLE,Constants.ArmConstants.LowScoring.WRIST_ANGLE),
-                new WaitCommand(armMovementTimeout)
-            ),
+            //Shoot Cube Mid
             new InstantCommand(() -> m_IntakeSubsystem.run()),
             new WaitCommand(0.5),
             new InstantCommand(() -> m_IntakeSubsystem.stop()),
-            //Stow
-            new ParallelRaceGroup(
-                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, 0,0,0),
-                new WaitCommand(armMovementTimeout)
-            ),
             //Drive to Middle of Field
-            new DriveToPoint(m_swerve, -5.2, 0, 180),
+            new DriveToPoint(m_swerve, Constants.CoordinateConstants.BlueField.PoofsStep2X, Constants.CoordinateConstants.BlueField.PoofsStep2Y, 180),
             new EnableVision(m_swerve)
 
         );

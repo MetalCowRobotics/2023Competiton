@@ -197,7 +197,29 @@ public final class Constants {
             public static final double ELBOW_ANGLE = 80;
             public static final double WRIST_ANGLE = 46;
         }
+    }
 
+    public static final class CoordinateConstants {
+        public static final class BlueField {
+            public static final double PoofsStep1X = -6.071;
+            public static final double PoofsStep1Y = -0.076;
+
+            public static final double PoofsStep2X = -6.071;
+            public static final double PoofsStep2Y = 0.406;
+        
+            public static final double PoofsStep3X = 0;
+            public static final double PoofsStep3Y = 0.559;
+        }
+        public static final class RedField {
+            public static final double PoofsStep1X = BlueField.PoofsStep1X;
+            public static final double PoofsStep1Y = -BlueField.PoofsStep1Y;
+
+            public static final double PoofsStep2X = BlueField.PoofsStep2X;
+            public static final double PoofsStep2Y = -BlueField.PoofsStep2Y;
+
+            public static final double PoofsStep3X = BlueField.PoofsStep3X;
+            public static final double PoofsStep3Y = -BlueField.PoofsStep3Y;
+        }
     }
 
 }

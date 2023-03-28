@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.AlignToPoint;
+import frc.robot.commands.AlignToSubstation;
 import frc.robot.commands.ArmToAngles;
 import frc.robot.commands.ArmToPoint;
 import frc.robot.commands.DisableVision;
@@ -116,6 +117,7 @@ public class RobotContainer {
     private Command alignToLeft;
     private Command alignToRight;
     private Command alignToSubstationRight;
+    private Command alignToSubstationLeft;
 
     private Command noAuto = new InstantCommand(() -> m_swerve.zeroGyro(180));
 
@@ -302,6 +304,8 @@ public class RobotContainer {
             alignToLeft = new AlignToPoint(m_swerve, -0.42, 0.5, 180);
             alignToRight = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
         }
+        alignToSubstationLeft = new AlignToSubstation(m_swerve, 0.42, 0.0);
+        alignToSubstationRight = new AlignToSubstation(m_swerve, 0.42, 0.0);
         
         m_autoSelector.addOption("Charge Station Score + Dock", chargeStationScoreDock);
         m_autoSelector.addOption("Charge Station Score + Mobility + Dock", chargeStationScoreMobilityDock);
@@ -339,7 +343,10 @@ public class RobotContainer {
         moveToLeft.onTrue(alignToLeft);
         moveToRight.onTrue(alignToRight);
 
-        drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft, alignToMiddle, alignToRight)));
+        substationLeft.onTrue(alignToSubstationLeft);
+        substationRight.onTrue(alignToSubstationRight);
+
+        drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft, alignToMiddle, alignToRight, alignToSubstationLeft, alignToSubstationRight)));
 
         m_swerve.enableVision();
 

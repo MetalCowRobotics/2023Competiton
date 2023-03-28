@@ -6,7 +6,9 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTREConfigs;
@@ -21,19 +23,17 @@ public class IntakeSubsystem extends SubsystemBase {
     private double motorSpeed = 0;
     CTREConfigs configs = new CTREConfigs();
 
-    private DigitalInput leftSensor;
-    private DigitalInput rightSensor;
+    private DigitalInput coneSensor;
+    private AnalogPotentiometer cubeSensor;
 
-    private Debouncer leftDebouncer = new Debouncer(0.5);
-    private Debouncer rightDebouncer = new Debouncer(0.5);
-    // private static final Spark m_intakeRoller = new Spark(INTAKE_ROLLER_CAN_NUM
+    private Debouncer coneDebouncer = new Debouncer(0.5);
 
     public IntakeSubsystem() {
         intakeMotor.configAllSettings(configs.intakeMotorConfig);
         intakeMotor.setNeutralMode(NeutralMode.Brake);
 
-        leftSensor = new DigitalInput(0);
-        rightSensor = new DigitalInput(1);
+        coneSensor = new DigitalInput(IntakeConstants.CONE_SENSOR_DIO);
+        cubeSensor = new AnalogPotentiometer(IntakeConstants.CUBE_SENSOR_ANALOG, 4096, 0);
     }
 
 
@@ -41,15 +41,15 @@ public class IntakeSubsystem extends SubsystemBase {
         this.debug = debug;
     }
 
+    // cone intake, cube eject
     public void run(){
         motorSpeed = IntakeConstants.INTAKE_SPEED;
         IntakeConstants.intakeRunning = true;
-        // System.out.println("RUN");
     }
 
-
+    // cone eject, cube intake
     public void runReverse() {
-        motorSpeed = -(IntakeConstants.INTAKE_SPEED);
+        motorSpeed = -IntakeConstants.INTAKE_SPEED;
         IntakeConstants.intakeRunning = true;
     }
 
@@ -59,16 +59,31 @@ public class IntakeSubsystem extends SubsystemBase {
         IntakeConstants.intakeRunning = false;
     }
 
+    public boolean coneInIntake() {
+        return coneDebouncer.calculate(coneSensor.get());
+    }
+
+    public boolean cubeInIntake() {
+        return cubeSensor.get() < IntakeConstants.CUBE_INSIDE_THRESHOLD;
+    }
+
+    public void eject() {
+        if (cubeInIntake()) {
+            run();
+            return;
+        }
+        if (coneInIntake()) {
+            runReverse();
+            return;
+        }
+        stop();
+    }
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("cone in intake l", leftSensor.get());
-        SmartDashboard.putBoolean("cone in intake r", rightSensor.get());
+        SmartDashboard.putBoolean("cone in intake", coneInIntake());
+        SmartDashboard.putBoolean("cube in intake", coneInIntake());
         intakeMotor.set(TalonSRXControlMode.PercentOutput, motorSpeed);
-    }
-
-    public boolean coneInIntake() {
-        return leftDebouncer.calculate(leftSensor.get()) && rightDebouncer.calculate(rightSensor.get());
     }
 }
 

@@ -83,6 +83,7 @@ public class RobotContainer {
     Trigger intakeForward = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftTrigger.value) > 0.7);
     Trigger intakeReverse = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightTrigger.value) > 0.7);
     Trigger stopIntake = new Trigger(() -> operator.getRawButtonPressed(XboxController.Button.kX.value));
+    Trigger eject = new Trigger(() -> operator.getRawButtonPressed(XboxController.Button.kBack.value));
 
     Trigger substationRight = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kRightBumper.value));
     Trigger substationLeft = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kLeftBumper.value));
@@ -97,7 +98,7 @@ public class RobotContainer {
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1)
     );
-    Trigger stopIntakeOnPickup = new Trigger(() -> m_IntakeSubsystem.coneInIntake());
+    Trigger stopIntakeOnPickup = new Trigger(() -> m_IntakeSubsystem.coneInIntake() || m_IntakeSubsystem.cubeInIntake());
     // private final JoystickButton stopstow = new JoystickButton(operator, XboxController.Button.kB.value);
     
     /* Autos */
@@ -317,9 +318,9 @@ public class RobotContainer {
         m_autoSelector.setDefaultOption("None", noAuto);
         SmartDashboard.putData(m_autoSelector);
 
-        // stopIntakeOnPickup.onTrue(
-        //     new InstantCommand(() -> m_IntakeSubsystem.stop())
-        // );
+        stopIntakeOnPickup.onTrue(
+            new InstantCommand(() -> m_IntakeSubsystem.stop())
+        );
     }
 
     /**
@@ -481,6 +482,11 @@ public class RobotContainer {
                 new InstantCommand(
                     () -> m_IntakeSubsystem.stop()
                 )
+            )
+        );
+        eject.onTrue(
+            new InstantCommand(
+                () -> m_IntakeSubsystem.eject()
             )
         );
         m_IntakeSubsystem.stop();

@@ -5,7 +5,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTREConfigs;
 import frc.robot.Constants.IntakeConstants;
@@ -19,11 +21,19 @@ public class IntakeSubsystem extends SubsystemBase {
     private double motorSpeed = 0;
     CTREConfigs configs = new CTREConfigs();
 
+    private DigitalInput leftSensor;
+    private DigitalInput rightSensor;
+
+    private Debouncer leftDebouncer = new Debouncer(0.5);
+    private Debouncer rightDebouncer = new Debouncer(0.5);
     // private static final Spark m_intakeRoller = new Spark(INTAKE_ROLLER_CAN_NUM
 
     public IntakeSubsystem() {
         intakeMotor.configAllSettings(configs.intakeMotorConfig);
         intakeMotor.setNeutralMode(NeutralMode.Brake);
+
+        leftSensor = new DigitalInput(0);
+        rightSensor = new DigitalInput(1);
     }
 
 
@@ -52,7 +62,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("cone in intake l", leftSensor.get());
+        SmartDashboard.putBoolean("cone in intake r", rightSensor.get());
         intakeMotor.set(TalonSRXControlMode.PercentOutput, motorSpeed);
+    }
+
+    public boolean coneInIntake() {
+        return leftDebouncer.calculate(leftSensor.get()) && rightDebouncer.calculate(rightSensor.get());
     }
 }
 

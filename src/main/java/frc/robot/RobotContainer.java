@@ -39,6 +39,15 @@ import frc.robot.subsystems.WristSubsystem;
  */
 public class RobotContainer {
     /*WaitCommand time = new WaitCommand(3.0);*/
+
+    /* Subsystems */
+    private Swerve m_swerve = new Swerve();
+    private ShoulderSubsystem m_shoulderSubsystem;
+    private ElbowSubsystem m_elbowSubsystem;
+    private WristSubsystem m_wristSubsystem;
+    private IntakeSubsystem m_IntakeSubsystem;
+    private LEDSubsystem m_LEDSubsystem;
+
     /* Controllers */
     private final Joystick driver = new Joystick(0);
    private final Joystick operator = new Joystick(1);
@@ -88,15 +97,8 @@ public class RobotContainer {
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1)
     );
+    Trigger stopIntakeOnPickup = new Trigger(() -> m_IntakeSubsystem.coneInIntake());
     // private final JoystickButton stopstow = new JoystickButton(operator, XboxController.Button.kB.value);
-
-    /* Subsystems */
-    private Swerve m_swerve = new Swerve();
-    private ShoulderSubsystem m_shoulderSubsystem;
-    private ElbowSubsystem m_elbowSubsystem;
-    private WristSubsystem m_wristSubsystem;
-    private IntakeSubsystem m_IntakeSubsystem;
-    private LEDSubsystem m_LEDSubsystem;
     
     /* Autos */
     private double armMovementTimeout = 4;
@@ -313,7 +315,11 @@ public class RobotContainer {
         m_autoSelector.addOption("Cable Run Score Mobility", cableRunScoreMobility);
         m_autoSelector.addOption("arm test", armTest);
         m_autoSelector.setDefaultOption("None", noAuto);
-        SmartDashboard.putData(m_autoSelector);        
+        SmartDashboard.putData(m_autoSelector);
+
+        // stopIntakeOnPickup.onTrue(
+        //     new InstantCommand(() -> m_IntakeSubsystem.stop())
+        // );
     }
 
     /**

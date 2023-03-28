@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignToPoint;
 import frc.robot.commands.ArmToAngles;
+import frc.robot.commands.BalanceChargeStation;
 import frc.robot.commands.DisableVision;
 import frc.robot.commands.DriveToPoint;
 import frc.robot.commands.EnableVision;
@@ -54,7 +55,6 @@ public class RobotContainer {
     private final JoystickButton moveToCenter = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton moveToRight = new JoystickButton(driver, XboxController.Button.kX.value);
-    private final JoystickButton autoLevel = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     
     /* Operator Buttons */
     private final JoystickButton cubeSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
@@ -83,12 +83,9 @@ public class RobotContainer {
 
     Trigger shootHigh = new Trigger(() -> operator.getRawButtonPressed(XboxController.Button.kStart.value));
     // Trigger toggleLED = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kY.value));
-
-    Trigger drive = new Trigger(() -> 
-        (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
-        (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1)
-    );
     // private final JoystickButton stopstow = new JoystickButton(operator, XboxController.Button.kB.value);
+
+    Trigger balance = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kStart.value));
 
     /* Subsystems */
     private Swerve m_swerve = new Swerve();
@@ -115,6 +112,7 @@ public class RobotContainer {
     private Command alignToRight;
     private Command alignToSubstationRight;
     private Command changeColor;
+    private Command balanceCommand;
 
     private Command noAuto = new InstantCommand(() -> m_swerve.zeroGyro(180));
 
@@ -304,6 +302,8 @@ public class RobotContainer {
             alignToLeft = new AlignToPoint(m_swerve, -0.4, -0.577, 180);
             alignToRight = new AlignToPoint(m_swerve, -0.4, 0.577+0.15, 180);
         }
+
+        balanceCommand = new BalanceChargeStation(m_swerve);
         
         m_autoSelector.addOption("Charge Station Score + Dock", chargeStationScoreDock);
         m_autoSelector.addOption("Charge Station Score + Mobility + Dock", chargeStationScoreMobilityDock);
@@ -330,20 +330,27 @@ public class RobotContainer {
                 () -> driver.getRawAxis(translationAxis), 
                 () -> driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean(),
-                () -> autoLevel.getAsBoolean()
+                () -> robotCentric.getAsBoolean()
             )
         );
         
         
         zeroGyro.onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+        
         moveToCenter.onTrue(alignToMiddle);
+        moveToCenter.onFalse(new InstantCommand(() -> alignToMiddle.cancel()));
+
         moveToLeft.onTrue(alignToLeft);
+        moveToLeft.onFalse(new InstantCommand(() -> alignToLeft.cancel()));
+
         moveToRight.onTrue(alignToRight);
+        moveToRight.onFalse(new InstantCommand(() -> alignToRight.cancel()));
+
+        balance.onTrue(balanceCommand);
+        balance.onTrue(new InstantCommand(() -> balanceCommand.cancel()));
+
         // changeColor = new ToggleColor(m_LEDSubsystem);
         //toggleLED.onTrue(changeColor);
-
-        drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft, alignToMiddle, alignToRight)));
 
         m_swerve.enableVision();
 

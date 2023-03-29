@@ -201,10 +201,10 @@ public final class Constants {
 
     public static final class CoordinateConstants {
         public static final class BlueField {
-            public static final double PoofsStep1X = -6.071;
+            public static final double PoofsStep1X = -5.867;
             public static final double PoofsStep1Y = -0.076;
 
-            public static final double PoofsStep2X = -6.071;
+            public static final double PoofsStep2X = -5.867;
             public static final double PoofsStep2Y = 0.406;
         
             public static final double PoofsStep3X = 0;

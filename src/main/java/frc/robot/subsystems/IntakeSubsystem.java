@@ -73,15 +73,11 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void eject() {
-        if (cubeInIntake()) {
-            run();
-            return;
-        }
         if (coneInIntake()) {
             runReverse();
-            return;
+        } else {
+            run();
         }
-        stop();
     }
 
     @Override

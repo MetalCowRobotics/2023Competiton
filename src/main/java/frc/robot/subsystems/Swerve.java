@@ -53,7 +53,7 @@ public class Swerve extends SubsystemBase {
     private double speedMultiplier = 1;
 
     private double lastHeading = 0;
-    private PIDController angleHoldingPIDController = new PIDController(0.004, 0, 0);
+    private PIDController angleHoldingPIDController = new PIDController(0.0004, 0, 0);
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
@@ -104,6 +104,7 @@ public class Swerve extends SubsystemBase {
         double angularVelocity;
         if (rotation == 0) {
             angularVelocity = angleHoldingPIDController.calculate(getYaw().getDegrees());
+            angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
         } else {
             angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
             angleHoldingPIDController.setSetpoint(getYaw().getDegrees());
@@ -283,5 +284,6 @@ public class Swerve extends SubsystemBase {
         Pose2d pose = swerveOdometry.getPoseMeters();
         SmartDashboard.putNumber("x from odometry", pose.getX());
         SmartDashboard.putNumber("y from odometry", pose.getY());
+        SmartDashboard.putNumber("charge station angle", getBalanceAngle().getDegrees());
     }
 }

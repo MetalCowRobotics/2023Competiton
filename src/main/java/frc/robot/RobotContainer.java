@@ -338,16 +338,16 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
         
         moveToCenter.onTrue(alignToMiddle);
-        moveToCenter.onFalse(new InstantCommand(() -> alignToMiddle.cancel()));
+        moveToCenter.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToMiddle)));
 
         moveToLeft.onTrue(alignToLeft);
-        moveToLeft.onFalse(new InstantCommand(() -> alignToLeft.cancel()));
+        moveToLeft.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft)));
 
         moveToRight.onTrue(alignToRight);
-        moveToRight.onFalse(new InstantCommand(() -> alignToRight.cancel()));
+        moveToRight.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToRight)));
 
         balance.onTrue(balanceCommand);
-        balance.onTrue(new InstantCommand(() -> balanceCommand.cancel()));
+        balance.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(balanceCommand)));
 
         // changeColor = new ToggleColor(m_LEDSubsystem);
         //toggleLED.onTrue(changeColor);

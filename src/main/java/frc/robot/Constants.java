@@ -177,13 +177,13 @@ public final class Constants {
         }
         public static final class GroundCone {
             public static final double SHOULDER_ANGLE = 96.2;
-            public static final double ELBOW_ANGLE = -50;
-            public static final double WRIST_ANGLE = -9;
+            public static final double ELBOW_ANGLE = -51;
+            public static final double WRIST_ANGLE = -12;
         }
         public static final class GroundCube {
             public static final double SHOULDER_ANGLE = 102;
-            public static final double ELBOW_ANGLE = -52;
-            public static final double WRIST_ANGLE = -4;
+            public static final double ELBOW_ANGLE = -49;
+            public static final double WRIST_ANGLE = -10;
         }
         public static final class MidScoring {
             public static final double SHOULDER_ANGLE = 64;
@@ -200,7 +200,29 @@ public final class Constants {
             public static final double ELBOW_ANGLE = 80;
             public static final double WRIST_ANGLE = 46;
         }
+    }
 
+    public static final class CoordinateConstants {
+        public static final class BlueField {
+            public static final double PoofsStep1X = -5.867;
+            public static final double PoofsStep1Y = -0.2;
+
+            public static final double PoofsStep2X = -5.867;
+            public static final double PoofsStep2Y = 0.406;
+        
+            public static final double PoofsStep3X = 0;
+            public static final double PoofsStep3Y = 0.559;
+        }
+        public static final class RedField {
+            public static final double PoofsStep1X = BlueField.PoofsStep1X;
+            public static final double PoofsStep1Y = -BlueField.PoofsStep1Y;
+
+            public static final double PoofsStep2X = BlueField.PoofsStep2X;
+            public static final double PoofsStep2Y = -BlueField.PoofsStep2Y;
+
+            public static final double PoofsStep3X = BlueField.PoofsStep3X;
+            public static final double PoofsStep3Y = -BlueField.PoofsStep3Y;
+        }
     }
 
 }

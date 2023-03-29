@@ -326,9 +326,27 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     public void configureButtonBindings() {
+        // stopIntakeOnPickup.onTrue(
+        //     new InstantCommand(() -> m_IntakeSubsystem.stop())
+        // );
+// test this bit once the rest works
         stopIntakeOnPickup.onTrue(
-            new InstantCommand(() -> m_IntakeSubsystem.stop())
+            new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> m_shoulderSubsystem.setTarget(0)
+                ),
+                new InstantCommand(
+                    () -> m_elbowSubsystem.setTarget(0)
+                ), 
+                new InstantCommand(
+                    () -> m_wristSubsystem.setTarget(-5.22)
+                ), 
+                new InstantCommand(
+                    () -> m_IntakeSubsystem.stop()
+                )
+            )
         );
+
         /* Driver Buttons */
         m_swerve.setDefaultCommand(
             new TeleopSwerve(

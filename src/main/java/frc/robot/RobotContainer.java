@@ -99,18 +99,18 @@ public class RobotContainer {
     Trigger balance = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kStart.value));
 
     /* Subsystems */
-    private Swerve m_swerve = new Swerve();
-    private ShoulderSubsystem m_shoulderSubsystem;
-    private ElbowSubsystem m_elbowSubsystem;
-    private WristSubsystem m_wristSubsystem;
-    private IntakeSubsystem m_IntakeSubsystem;
-    private LEDSubsystem m_LEDSubsystem;
+    // private Swerve m_swerve = new Swerve();
+    // private ShoulderSubsystem m_shoulderSubsystem;
+    // private ElbowSubsystem m_elbowSubsystem;
+    // private WristSubsystem m_wristSubsystem;
+    // private IntakeSubsystem m_IntakeSubsystem;
+    // private LEDSubsystem m_LEDSubsystem;
 
     Trigger drive = new Trigger(() -> 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kLeftX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kLeftY.value)) > 0.1) || 
         (Math.abs(driver.getRawAxis(XboxController.Axis.kRightX.value)) > 0.1 || Math.abs(driver.getRawAxis(XboxController.Axis.kRightY.value)) > 0.1)
     );
-    Trigger stopIntakeOnPickup = new Trigger(() -> m_IntakeSubsystem.coneInIntake());
+    Trigger stopIntakeOnPickup = new Trigger(() -> m_IntakeSubsystem.coneInIntake() || m_IntakeSubsystem.cubeInIntake());
     // private final JoystickButton stopstow = new JoystickButton(operator, XboxController.Button.kB.value);
     
     /* Autos */

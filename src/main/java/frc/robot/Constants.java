@@ -160,8 +160,7 @@ public final class Constants {
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kRightBumper.value);
         public static final JoystickButton CONT_INTAKE_RUN_REV = new JoystickButton(operatorControls, XboxController.Button.kLeftBumper.value);
         public static final int CONE_SENSOR_DIO = 0;
-        public static final int CUBE_SENSOR_ANALOG = 0;
-        public static final double CUBE_INSIDE_THRESHOLD = 200.0;
+        public static final int CUBE_SENSOR_DIO = 1;
     }
 
     public static final class ArmConstants {

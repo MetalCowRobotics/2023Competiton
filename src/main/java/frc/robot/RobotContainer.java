@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignToPoint;
+import frc.robot.commands.AlignToSubstation;
 import frc.robot.commands.ArmToAngles;
 import frc.robot.commands.BalanceChargeStation;
 import frc.robot.commands.DisableVision;
@@ -141,6 +142,7 @@ public class RobotContainer {
     private Command alignToSubstationRight;
     private Command changeColor;
     private Command balanceCommand;
+    private Command alignToSubstationLeft;
 
     private Command noAuto = new InstantCommand(() -> m_swerve.zeroGyro(180));
 
@@ -696,6 +698,8 @@ public class RobotContainer {
         }
 
         balanceCommand = new BalanceChargeStation(m_swerve);
+        alignToSubstationLeft = new AlignToSubstation(m_swerve, 0.42, 0.0);
+        alignToSubstationRight = new AlignToSubstation(m_swerve, 0.42, 0.0);
         
         m_autoSelector.addOption("Charge Station Score + Dock", chargeStationScoreDock);
         m_autoSelector.addOption("Charge Station Score + Mobility + Dock", chargeStationScoreMobilityDock);

@@ -14,6 +14,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,7 +37,6 @@ public class Swerve extends SubsystemBase {
     
     private PhotonCamera camera;
     private double accelerationTime = 0.6;
-    private int i = 0;
     private final double ODOMETRY_RESET_DISTANCE_THRESHOLD = 2.5;
     private final double ODOMETRY_RESET_TIME_THRESHOLD = 15;
     private double lastObservedTime = -2 * ODOMETRY_RESET_TIME_THRESHOLD;
@@ -51,6 +51,9 @@ public class Swerve extends SubsystemBase {
     private int lastTrackedTarget = -1;
 
     private double speedMultiplier = 1;
+
+    private double lastHeading = 0;
+    private PIDController angleHoldingPIDController = new PIDController(0.0004, 0, 0);
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
@@ -68,6 +71,9 @@ public class Swerve extends SubsystemBase {
         estimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(0, 0, getYaw()));
 
         camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+
+        angleHoldingPIDController.setTolerance(2);
+        angleHoldingPIDController.enableContinuousInput(-180, 180);
         
     }
 
@@ -80,7 +86,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setCrawl() {
-        speedMultiplier = 0.5;
+        speedMultiplier = 0.4;
     }
 
     public void setSprint() {
@@ -95,7 +101,16 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("multiplier", speedMultiplier);
         double xSpeed = m_xSlewRateLimiter.calculate(translation.getX() * speedMultiplier);
         double ySpeed = m_ySlewRateLimiter.calculate(translation.getY() * speedMultiplier);
-        double angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
+        double angularVelocity;
+        if (rotation == 0) {
+            angularVelocity = angleHoldingPIDController.calculate(getYaw().getDegrees());
+            angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
+        } else {
+            angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
+            angleHoldingPIDController.setSetpoint(getYaw().getDegrees());
+        }
+        
+        
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -121,6 +136,7 @@ public class Swerve extends SubsystemBase {
         double xSpeed = translation.getX();
         double ySpeed = translation.getY();
         double angularVelocity = rotation;
+        angleHoldingPIDController.setSetpoint(getYaw().getDegrees());
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -188,7 +204,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getRoll() {
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getRoll()) : Rotation2d.fromDegrees(gyro.getYaw());
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getRoll()) : Rotation2d.fromDegrees(gyro.getRoll());
+    }
+
+    public Rotation2d getBalanceAngle() {
+        return Rotation2d.fromDegrees(360 - gyro.getRoll());
     }
 
     private void addVisionMeasurement() {
@@ -246,8 +266,6 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getYaw(), getModulePositions());
         estimator.update(getYaw(), getModulePositions());
         if (visionEnabled) {
-            SmartDashboard.putNumber("vision count", i);
-            i++;
             try {
                 addVisionMeasurement();
             } catch (Exception e) {
@@ -266,5 +284,6 @@ public class Swerve extends SubsystemBase {
         Pose2d pose = swerveOdometry.getPoseMeters();
         SmartDashboard.putNumber("x from odometry", pose.getX());
         SmartDashboard.putNumber("y from odometry", pose.getY());
+        SmartDashboard.putNumber("charge station angle", getBalanceAngle().getDegrees());
     }
 }

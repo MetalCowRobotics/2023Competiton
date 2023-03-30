@@ -26,19 +26,17 @@ public class IntakeSubsystem extends SubsystemBase {
     CTREConfigs configs = new CTREConfigs();
 
     private DigitalInput coneSensor;
-    private AnalogPotentiometer cubeSensor;
-    private Ultrasonic cubeUltrasonic;
-    private PWM cubeUltraPwm;
+    private DigitalInput cubeSensor;
 
     private Debouncer coneDebouncer = new Debouncer(0.5);
+    private Debouncer cubeDebouncer = new Debouncer(0.5);
 
     public IntakeSubsystem() {
         intakeMotor.configAllSettings(configs.intakeMotorConfig);
         intakeMotor.setNeutralMode(NeutralMode.Brake);
 
         coneSensor = new DigitalInput(IntakeConstants.CONE_SENSOR_DIO);
-        cubeSensor = new AnalogPotentiometer(IntakeConstants.CUBE_SENSOR_ANALOG, 4096, 0);
-        cubeUltraPwm = new PWM(2);
+        cubeSensor = new DigitalInput(IntakeConstants.CUBE_SENSOR_DIO);
     }
 
 
@@ -69,14 +67,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public boolean cubeInIntake() {
-        return cubeSensor.get() < IntakeConstants.CUBE_INSIDE_THRESHOLD;
+        return !cubeDebouncer.calculate(cubeSensor.get());
     }
 
     public void eject() {
-        if (coneInIntake()) {
-            runReverse();
-        } else {
+        if (cubeInIntake()) {
             run();
+        } else {
+            runReverse();
         }
     }
 
@@ -85,9 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("cone in intake", coneInIntake());
         SmartDashboard.putBoolean("cube in intake", cubeInIntake());
         SmartDashboard.putBoolean("cone sensor", coneSensor.get());
-        SmartDashboard.putNumber("cube sensor", cubeUltraPwm.getRaw());
-        SmartDashboard.putNumber("intake count", i);
-        i++;
+        SmartDashboard.putBoolean("cube sensor", cubeSensor.get());
         intakeMotor.set(TalonSRXControlMode.PercentOutput, motorSpeed);
     }
 }

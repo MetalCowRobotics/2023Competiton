@@ -82,9 +82,9 @@ public class RobotContainer {
     Trigger coneFloorIntakePosition = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightY.value) > 0.8);
 
     Trigger intakeForward = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kLeftTrigger.value) > 0.7);
-    Trigger intakeReverse = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightTrigger.value) > 0.7);
+    Trigger intakeReverse = new Trigger(() -> operator.getRawButtonPressed(XboxController.Button.kBack.value));
     Trigger stopIntake = new Trigger(() -> operator.getRawButtonPressed(XboxController.Button.kX.value));
-    Trigger eject = new Trigger(() -> operator.getRawButtonPressed(XboxController.Button.kBack.value));
+    Trigger eject = new Trigger(() -> operator.getRawAxis(XboxController.Axis.kRightTrigger.value) > 0.7);
 
     Trigger substationRight = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kRightBumper.value));
     Trigger substationLeft = new Trigger(() -> driver.getRawButtonPressed(XboxController.Button.kLeftBumper.value));
@@ -345,7 +345,7 @@ public class RobotContainer {
                     ),
                 new InstantCommand(() -> m_IntakeSubsystem.runReverse())
                 ),
-            new DriveToPoint(m_swerve, -5.4, -0.27, 0)
+            new DriveToPoint(m_swerve, -5.4, -0.38, 0)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.stop()
             ),
@@ -395,7 +395,7 @@ public class RobotContainer {
                     ),
                 new InstantCommand(() -> m_IntakeSubsystem.runReverse())
                 ),
-            new DriveToPoint(m_swerve, -5.4, 0.27, 0)
+            new DriveToPoint(m_swerve, -5.4, 0.38, 0)
             ),
             new InstantCommand(() -> m_IntakeSubsystem.stop()
             ),

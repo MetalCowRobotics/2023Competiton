@@ -703,14 +703,14 @@ public class RobotContainer {
         m_autoSelector.addOption("Red Substation Score + Mobility + Dock", substationScoreMobilityDockRed);
         m_autoSelector.addOption("Blue Substation Score + Mobility", substationScoreMobilityBlue);
         m_autoSelector.addOption("Cable Run Score Mobility", cableRunScoreMobility);
-        m_autoSelector.addOption("Blue Two Piece Mid Cube Low Cube", twoPieceAutoBlueMidCubeLowCube);
-        m_autoSelector.addOption("Red Two Piece Mid Cube Low Cube", twoPieceAutoRedMidCubeLowCube);
-        m_autoSelector.addOption("Blue Two Piece High Cube Low Cube", twoPieceAutoBlueHighCubeLowCube);
-        m_autoSelector.addOption("Red Two Piece High Cube Low Cube", twoPieceAutoRedHighCubeLowCube);
+        // m_autoSelector.addOption("Blue Two Piece Mid Cube Low Cube", twoPieceAutoBlueMidCubeLowCube);
+        // m_autoSelector.addOption("Red Two Piece Mid Cube Low Cube", twoPieceAutoRedMidCubeLowCube);
+        // m_autoSelector.addOption("Blue Two Piece High Cube Low Cube", twoPieceAutoBlueHighCubeLowCube);
+        // m_autoSelector.addOption("Red Two Piece High Cube Low Cube", twoPieceAutoRedHighCubeLowCube);
 
-        m_autoSelector.addOption("Blue Two Piece Mid Cube Mid Cone IN TESTING", twoPieceAutoBlueMidCubeMidCone);
-        m_autoSelector.addOption("Blue Two Piece Mid Cone Low Cube IN TESTING", twoPieceAutoBlueMidConeLowCube);
-        m_autoSelector.addOption("Blue Two Piece Poofs TEST", twoPieceAutoBluePoofsTest);
+        // m_autoSelector.addOption("Blue Two Piece Mid Cube Mid Cone IN TESTING", twoPieceAutoBlueMidCubeMidCone);
+        // m_autoSelector.addOption("Blue Two Piece Mid Cone Low Cube IN TESTING", twoPieceAutoBlueMidConeLowCube);
+        // m_autoSelector.addOption("Blue Two Piece Poofs TEST", twoPieceAutoBluePoofsTest);
         m_autoSelector.addOption("arm test", armTest);
         m_autoSelector.setDefaultOption("None", noAuto);
         SmartDashboard.putData(m_autoSelector);

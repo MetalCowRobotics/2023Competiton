@@ -30,13 +30,21 @@ public class TeleopSwerve extends CommandBase {
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
+    private BooleanSupplier alignToGrid;
+    private PIDController angleController = new PIDController(0.04, 0, 0);
+
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier alignToGrid) {
         this.s_Swerve = s_Swerve;
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
+        this.alignToGrid = alignToGrid;
+
+        angleController.enableContinuousInput(0, 360);
+        angleController.setTolerance(2);
+        angleController.setSetpoint(0);
 
         addRequirements(s_Swerve);
     }
@@ -47,12 +55,23 @@ public class TeleopSwerve extends CommandBase {
         double x = s_Swerve.getPose().getX();
         double y = s_Swerve.getPose().getY();
 
+        double yaw = s_Swerve.getYaw().getDegrees() % 360.0;
+        if (yaw < 0) {
+            yaw += 360;
+        }
+
         SmartDashboard.putNumber("tracked x", x);
         SmartDashboard.putNumber("tracked y", y);
+        SmartDashboard.putBoolean("aligning", alignToGrid.getAsBoolean());
 
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(-rotationSup.getAsDouble(), Constants.stickDeadband);
+
+        if (alignToGrid.getAsBoolean()) {
+            rotationVal = angleController.calculate(yaw);
+            SmartDashboard.putNumber("rotation correction", rotationVal);
+        }
 
         /* Drive */
         s_Swerve.drive(

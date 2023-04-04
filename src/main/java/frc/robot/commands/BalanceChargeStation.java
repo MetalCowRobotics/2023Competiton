@@ -9,7 +9,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
 public class BalanceChargeStation extends CommandBase {
-    private Debouncer checker = new Debouncer(0.5);
+    private Debouncer checker = new Debouncer(1);
     
     private Swerve m_swerve;
     private PIDController chargeStationAngleController = new PIDController(0.008, 0.0, 0.000);
@@ -37,7 +37,7 @@ public class BalanceChargeStation extends CommandBase {
         i++;
 
         m_swerve.driveAuto(
-            new Translation2d(xComponent, 0).times(Constants.Swerve.maxSpeed), 
+            new Translation2d(-xComponent, 0).times(Constants.Swerve.maxSpeed), 
             0, 
             true, 
             false

@@ -36,7 +36,7 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
 
     private boolean inverted;
     public static class ServoMotorSubsystemConfig {
-        public double nominalVoltage = 12;
+        public double nominalVoltage = 12.6;
         public double rampTime = 0.125;
         public int motorCanID;
         public boolean inverted = false;

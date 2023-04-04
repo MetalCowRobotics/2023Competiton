@@ -166,8 +166,8 @@ public final class Constants {
     public static final class ArmConstants {
         public static final class SubstationCone {
             public static final double SHOULDER_ANGLE = 58.09;
-            public static final double ELBOW_ANGLE =66.3;
-            public static final double WRIST_ANGLE = 107;
+            public static final double ELBOW_ANGLE = 66.3;
+            public static final double WRIST_ANGLE = 106;
         }
         public static final class SubstationCube {
             public static final double SHOULDER_ANGLE = 46.3;
@@ -177,7 +177,7 @@ public final class Constants {
         public static final class GroundCone {
             public static final double SHOULDER_ANGLE = 96.2;
             public static final double ELBOW_ANGLE = -51;
-            public static final double WRIST_ANGLE = -12;
+            public static final double WRIST_ANGLE = -13;
         }
         public static final class GroundCube {
             public static final double SHOULDER_ANGLE = 102;
@@ -187,7 +187,7 @@ public final class Constants {
         public static final class MidScoring {
             public static final double SHOULDER_ANGLE = 64;
             public static final double ELBOW_ANGLE = 43;
-            public static final double WRIST_ANGLE = 90;
+            public static final double WRIST_ANGLE = 88;
         }
         public static final class LowScoring {
             public static final double SHOULDER_ANGLE = 0;

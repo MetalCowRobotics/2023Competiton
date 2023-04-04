@@ -28,8 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private DigitalInput coneSensor;
     private DigitalInput cubeSensor;
 
-    private Debouncer coneDebouncer = new Debouncer(0.5);
-    private Debouncer cubeDebouncer = new Debouncer(0.5);
+    private Debouncer coneDebouncer = new Debouncer(0.5, Debouncer.DebounceType.kBoth);
+    private Debouncer cubeDebouncer = new Debouncer(0.5, Debouncer.DebounceType.kBoth);
 
     public IntakeSubsystem() {
         intakeMotor.configAllSettings(configs.intakeMotorConfig);

@@ -22,6 +22,7 @@ import frc.robot.commands.AlignToSubstation;
 import frc.robot.commands.ArmToAngles;
 import frc.robot.commands.BalanceChargeStation;
 import frc.robot.commands.DisableVision;
+import frc.robot.commands.DrivePath;
 import frc.robot.commands.DriveToPoint;
 import frc.robot.commands.EnableVision;
 import frc.robot.commands.TeleopSwerve;
@@ -127,6 +128,7 @@ public class RobotContainer {
     private Command armTest;
     private Command twoPieceAutoBlueMidCubeLowCube;
     private Command twoPieceAutoRedMidCubeLowCube;
+    private Command twoPieceTwoCube;
 
     private Command twoPieceAutoBlueHighCubeLowCube;
     private Command twoPieceAutoRedHighCubeLowCube;
@@ -706,6 +708,31 @@ public class RobotContainer {
             new EnableVision(m_swerve)
         );
 
+        twoPieceTwoCube = new SequentialCommandGroup(
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.HighScoring.SHOULDER_ANGLE, Constants.ArmConstants.HighScoring.ELBOW_ANGLE,Constants.ArmConstants.HighScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.run()),
+            new WaitCommand(0.5),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            new InstantCommand(() -> m_shoulderSubsystem.setTarget(0)),
+            new InstantCommand(() -> m_elbowSubsystem.setTarget(0)),
+            new InstantCommand(() -> m_wristSubsystem.setTarget(0)),
+            new ParallelCommandGroup(
+                new DrivePath(m_swerve),
+                new SequentialCommandGroup(
+                    new WaitCommand(3),
+                    new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem,Constants.ArmConstants.GroundCube.SHOULDER_ANGLE, Constants.ArmConstants.GroundCube.ELBOW_ANGLE,Constants.ArmConstants.GroundCube.WRIST_ANGLE-2),
+                    new WaitCommand(2.5),
+                    new InstantCommand(() -> m_IntakeSubsystem.stop()),
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem,0, 10, 0)
+                )
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.run())
+        );
+
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
             alignToMiddle = new AlignToPoint(m_swerve, -0.42, 0.0, 180);
             alignToLeft = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
@@ -731,11 +758,13 @@ public class RobotContainer {
         m_autoSelector.addOption("Blue Two Piece High Cube Low Cube", twoPieceAutoBlueHighCubeLowCube);
         m_autoSelector.addOption("Red Two Piece High Cube Low Cube", twoPieceAutoRedHighCubeLowCube);
 
+        m_autoSelector.setDefaultOption("2 piece High cube Mid cube ", twoPieceTwoCube);
+
         m_autoSelector.addOption("Blue Two Piece Mid Cube Mid Cone IN TESTING", twoPieceAutoBlueMidCubeMidCone);
         m_autoSelector.addOption("Blue Two Piece Mid Cone Low Cube IN TESTING", twoPieceAutoBlueMidConeLowCube);
         m_autoSelector.addOption("Blue Two Piece Poofs TEST", twoPieceAutoBluePoofsTest);
         m_autoSelector.addOption("arm test", armTest);
-        m_autoSelector.setDefaultOption("None", noAuto);
+        // m_autoSelector.setDefaultOption("None", noAuto);
         SmartDashboard.putData(m_autoSelector);
     }
 

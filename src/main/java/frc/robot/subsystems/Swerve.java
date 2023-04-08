@@ -259,7 +259,7 @@ public class Swerve extends SubsystemBase {
         estimator.update(getYaw(), getModulePositions());
         if (visionEnabled) {
             try {
-                addVisionMeasurement();
+                // addVisionMeasurement();
             } catch (Exception e) {
                 lastTrackedTarget = -1;
             }

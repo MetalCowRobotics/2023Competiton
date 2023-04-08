@@ -8,6 +8,7 @@ import java.util.List;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -18,6 +19,9 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,7 +45,7 @@ public class DrivePath extends CommandBase {
 
     Timer t;
 
-    public DrivePath(Swerve swerve) {
+    public DrivePath(Swerve swerve, String pathName) {
         this.m_swerve = swerve;
 
         anglePIDController.setTolerance(ANGLE_TOLERANCE);
@@ -53,7 +57,7 @@ public class DrivePath extends CommandBase {
 
         
 
-        path = PathPlanner.loadPath("2 Piece Auto", new PathConstraints(2, 1.5));
+        path = PathPlanner.loadPath(pathName, new PathConstraints(3.5, 2));
 
         // TrajectoryConfig config = new TrajectoryConfig(1, 0.5);
         // List<Pose2d> points = new ArrayList<Pose2d>();
@@ -74,8 +78,11 @@ public class DrivePath extends CommandBase {
         t.start();
         m_swerve.zeroGyro(180);
         Pose2d initialPose = path.getInitialPose();
-        m_swerve.resetOdometry(new Pose2d(-initialPose.getX(), -initialPose.getY(), m_swerve.getYaw()));
-        SmartDashboard.putBoolean("checking end condition", false);
+        if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
+            m_swerve.resetOdometry(new Pose2d(-initialPose.getX(), initialPose.getY(), m_swerve.getYaw()));
+        } else {
+            m_swerve.resetOdometry(new Pose2d(-initialPose.getX(), -initialPose.getY(), m_swerve.getYaw()));
+        }
     }
 
     @Override
@@ -90,6 +97,10 @@ public class DrivePath extends CommandBase {
         double targetY = -targetState.poseMeters.getY();
         double targetYaw = targetState.holonomicRotation.getDegrees();
 
+        if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
+            targetY = -targetY;
+        }
+
         if (targetYaw < 0) {
             targetYaw += 360;
         }
@@ -100,7 +111,12 @@ public class DrivePath extends CommandBase {
 
         xController.setSetpoint(targetX);
         yController.setSetpoint(targetY);
-        anglePIDController.setSetpoint(targetYaw);
+        // 180 - (targetYaw - 180)
+        if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
+            anglePIDController.setSetpoint(180 - (targetYaw - 180));
+        } else {
+            anglePIDController.setSetpoint(targetYaw);
+        }
 
         double yaw = m_swerve.getYaw().getDegrees() % 360;
         if (yaw < 0) {

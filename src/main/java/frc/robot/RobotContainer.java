@@ -129,6 +129,7 @@ public class RobotContainer {
     private Command twoPieceAutoBlueMidCubeLowCube;
     private Command twoPieceAutoRedMidCubeLowCube;
     private Command twoPieceTwoCube;
+    private Command twoPieceHighCubeHighCone;
 
     private Command twoPieceAutoBlueHighCubeLowCube;
     private Command twoPieceAutoRedHighCubeLowCube;
@@ -720,7 +721,7 @@ public class RobotContainer {
             new InstantCommand(() -> m_elbowSubsystem.setTarget(0)),
             new InstantCommand(() -> m_wristSubsystem.setTarget(0)),
             new ParallelCommandGroup(
-                new DrivePath(m_swerve),
+                new DrivePath(m_swerve, "2 Piece Auto"),
                 new SequentialCommandGroup(
                     new WaitCommand(3),
                     new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
@@ -731,6 +732,39 @@ public class RobotContainer {
                 )
             ),
             new InstantCommand(() -> m_IntakeSubsystem.run())
+        );
+
+        twoPieceHighCubeHighCone = new SequentialCommandGroup(
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.HighScoring.SHOULDER_ANGLE, Constants.ArmConstants.HighScoring.ELBOW_ANGLE,Constants.ArmConstants.HighScoring.WRIST_ANGLE),
+                new WaitCommand(armMovementTimeout)
+            ),
+            new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+            new WaitCommand(0.5),
+            new InstantCommand(() -> m_IntakeSubsystem.stop()),
+            new InstantCommand(() -> m_shoulderSubsystem.setTarget(0)),
+            new InstantCommand(() -> m_elbowSubsystem.setTarget(0)),
+            new InstantCommand(() -> m_wristSubsystem.setTarget(0)),
+            new ParallelCommandGroup(
+                new DrivePath(m_swerve, "2 Piece Cone Cube"),
+                new SequentialCommandGroup(
+                    new WaitCommand(3),
+                    new InstantCommand(() -> m_IntakeSubsystem.runReverse()),
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem,Constants.ArmConstants.GroundCube.SHOULDER_ANGLE, Constants.ArmConstants.GroundCube.ELBOW_ANGLE,Constants.ArmConstants.GroundCube.WRIST_ANGLE-5),
+                    new WaitCommand(2.5),
+                    new InstantCommand(() -> m_IntakeSubsystem.stop()),
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem,0, 0, 0),
+                    // new WaitCommand(1),
+                    new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.HighScoring.SHOULDER_ANGLE, Constants.ArmConstants.HighScoring.ELBOW_ANGLE,Constants.ArmConstants.HighScoring.WRIST_ANGLE),
+                    new WaitCommand(0.25),
+                    new InstantCommand(() -> m_IntakeSubsystem.run())
+                )
+            ),
+            new ParallelRaceGroup(
+                new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem,0, 0, 0),
+                new WaitCommand(0.2)
+            ),
+            new DrivePath(m_swerve, "Balance")
         );
 
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
@@ -759,6 +793,7 @@ public class RobotContainer {
         m_autoSelector.addOption("Red Two Piece High Cube Low Cube", twoPieceAutoRedHighCubeLowCube);
 
         m_autoSelector.setDefaultOption("2 piece High cube Mid cube ", twoPieceTwoCube);
+        m_autoSelector.setDefaultOption("2 piece High cube High cone ", twoPieceHighCubeHighCone);
 
         m_autoSelector.addOption("Blue Two Piece Mid Cube Mid Cone IN TESTING", twoPieceAutoBlueMidCubeMidCone);
         m_autoSelector.addOption("Blue Two Piece Mid Cone Low Cube IN TESTING", twoPieceAutoBlueMidConeLowCube);

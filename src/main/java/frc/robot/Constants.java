@@ -164,6 +164,24 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
+        // CALIBRATION INSTRUCTIONS
+        // 1. Set all pot offsets to zero
+        // 2. Deploy the code to the robot
+        // 3. Power off the robot
+        // 4. Insert the bars and get the wrist to 90 degrees
+        // 5. Turn on the robot, but do not remove the bars
+        // 6. Look on Shuffleboard for Shoulder Angle, Elbow Angle, and Wrist Angle
+        // 7. Put those angle readings in as the offsets for each joint (Elbow Angle becomes the Elbow Offset, Shoulder Angle becomes the Shoulder Offset, Wrist Angle becomes the Wrist Offset)
+        public static final class Offsets {
+            public static final int ELBOW_POT_ANALOG_ID = 0;
+            public static final double ELBOW_POT_OFFSET = 1814;
+
+            public static final int SHOULDER_POT_ANALOG_ID = 1;
+            public static final double SHOULDER_POT_OFFSET = 1814;
+
+            public static final int WRIST_POT_ANALOG_ID = 2;
+            public static final double WRIST_POT_OFFSET = 1814;
+        } 
         public static final class SubstationCone {
             public static final double SHOULDER_ANGLE = 58.09;
             public static final double ELBOW_ANGLE = 66.3;

@@ -40,7 +40,7 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
         public double rampTime = 0.125;
         public int motorCanID;
         public boolean inverted = false;
-        public CANSparkMax.IdleMode idleMode = CANSparkMax.IdleMode.kBrake;
+        public CANSparkMax.IdleMode idleMode = CANSparkMax.IdleMode.kCoast;
         public int stallCurentLimit;
         public int freeCurentLimit;
 
@@ -105,6 +105,10 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
     
     public double getCurrentAngle() {
         return Units.rotationsToDegrees(encoder.getPosition() / reduction) + initialPosition;
+    }
+
+    public void resetEncoder(double angle) {
+        encoder.setPosition(angle);
     }
 
     public double getTargetAngle() {

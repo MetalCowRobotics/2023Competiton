@@ -139,6 +139,8 @@ public class RobotContainer {
     private Command twoPieceAutoBlueMidCubeMidCone;
     private Command twoPieceAutoBluePoofsTest;
     
+    private Command twoPieceCableRun;
+
     private Command alignToMiddle;
     private Command alignToLeft;
     private Command alignToRight;
@@ -767,6 +769,15 @@ public class RobotContainer {
             new DrivePath(m_swerve, "Balance")
         );
 
+        twoPieceCableRun = new SequentialCommandGroup(
+            new DisableVision(m_swerve),
+            new DrivePath(m_swerve, "2 Piece Cable Run"),
+            new SequentialCommandGroup(
+                new WaitCommand(2)
+            ),
+            new EnableVision(m_swerve)
+        );
+
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
             alignToMiddle = new AlignToPoint(m_swerve, -0.42, 0.0, 180);
             alignToLeft = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
@@ -794,6 +805,8 @@ public class RobotContainer {
 
         m_autoSelector.setDefaultOption("2 piece High cube Mid cube ", twoPieceTwoCube);
         m_autoSelector.setDefaultOption("2 piece High cube High cone ", twoPieceHighCubeHighCone);
+
+        m_autoSelector.setDefaultOption("2 Piece Cable Run", twoPieceCableRun);
 
         m_autoSelector.addOption("Blue Two Piece Mid Cube Mid Cone IN TESTING", twoPieceAutoBlueMidCubeMidCone);
         m_autoSelector.addOption("Blue Two Piece Mid Cone Low Cube IN TESTING", twoPieceAutoBlueMidConeLowCube);

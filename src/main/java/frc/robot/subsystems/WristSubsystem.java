@@ -1,11 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.util.KalmanFilter;
 
 public class WristSubsystem extends ServoMotorSubsystem {
 
     AnalogPotentiometer pot;
+    KalmanFilter kf = new KalmanFilter(0.1, 1.0);
 
     public WristSubsystem(ServoMotorSubsystemConfig config) {
         super(config);
@@ -34,6 +37,15 @@ public class WristSubsystem extends ServoMotorSubsystem {
 
     @Override
     public double getCurrentAngle() {
-        return -pot.get();
+        return kf.lastMeasurement();
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+        double adjustedAngle = kf.filter(pot.get(), super.getCurrentAngle());
+        SmartDashboard.putNumber("wrist pot reading", pot.get());
+        SmartDashboard.putNumber("adjusted wrist reading", adjustedAngle);
+        SmartDashboard.putNumber("adjusted wrist reading last", kf.lastMeasurement());
     }
 }

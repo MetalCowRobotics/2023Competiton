@@ -86,7 +86,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setCrawl() {
-        speedMultiplier = 0.11;
+        speedMultiplier = 0.5;
     }
 
     public void setSprint() {

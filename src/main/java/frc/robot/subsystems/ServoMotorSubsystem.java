@@ -40,7 +40,7 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
         public double rampTime = 0.125;
         public int motorCanID;
         public boolean inverted = false;
-        public CANSparkMax.IdleMode idleMode = CANSparkMax.IdleMode.kCoast;
+        public CANSparkMax.IdleMode idleMode = CANSparkMax.IdleMode.kBrake;
         public int stallCurentLimit;
         public int freeCurentLimit;
 

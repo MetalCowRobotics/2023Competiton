@@ -179,33 +179,33 @@ public final class Constants {
             public static final int SHOULDER_POT_ANALOG_ID = 1;
             public static final double SHOULDER_POT_OFFSET = 1814;
 
-            public static final int WRIST_POT_ANALOG_ID = 2;
-            public static final double WRIST_POT_OFFSET = 1814;
+            public static final int WRIST_POT_ANALOG_ID = 0;
+            public static final double WRIST_POT_OFFSET = 1706+47;
         } 
         public static final class SubstationCone {
             public static final double SHOULDER_ANGLE = 58.09;
             public static final double ELBOW_ANGLE = 66.3;
-            public static final double WRIST_ANGLE = 106;
+            public static final double WRIST_ANGLE = 122;
         }
         public static final class SubstationCube {
-            public static final double SHOULDER_ANGLE = 46.3;
-            public static final double ELBOW_ANGLE = 42;
-            public static final double WRIST_ANGLE = 65;
+            public static final double SHOULDER_ANGLE = 70;
+            public static final double ELBOW_ANGLE = 63;
+            public static final double WRIST_ANGLE = 119;
         }
         public static final class GroundCone {
             public static final double SHOULDER_ANGLE = 96.2;
             public static final double ELBOW_ANGLE = -51;
-            public static final double WRIST_ANGLE = -13;
+            public static final double WRIST_ANGLE = -10;
         }
         public static final class GroundCube {
             public static final double SHOULDER_ANGLE = 102;
             public static final double ELBOW_ANGLE = -49;
-            public static final double WRIST_ANGLE = -10;
+            public static final double WRIST_ANGLE = -3;
         }
         public static final class MidScoring {
-            public static final double SHOULDER_ANGLE = 64;
-            public static final double ELBOW_ANGLE = 43;
-            public static final double WRIST_ANGLE = 88;
+            public static final double SHOULDER_ANGLE = 63;
+            public static final double ELBOW_ANGLE = 36;
+            public static final double WRIST_ANGLE = 93;
         }
         public static final class LowScoring {
             public static final double SHOULDER_ANGLE = 0;

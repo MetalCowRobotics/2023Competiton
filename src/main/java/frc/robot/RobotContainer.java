@@ -735,6 +735,7 @@ public class RobotContainer {
         );
 
         twoPieceHighCubeHighCone = new SequentialCommandGroup(
+            new DisableVision(m_swerve),
             new ParallelRaceGroup(
                 new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.HighScoring.SHOULDER_ANGLE, Constants.ArmConstants.HighScoring.ELBOW_ANGLE,Constants.ArmConstants.HighScoring.WRIST_ANGLE),
                 new WaitCommand(armMovementTimeout)
@@ -764,17 +765,17 @@ public class RobotContainer {
                 new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem,0, 0, 0),
                 new WaitCommand(0.2)
             ),
-            new DrivePath(m_swerve, "Balance")
+            new EnableVision(m_swerve)
         );
 
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-            alignToMiddle = new AlignToPoint(m_swerve, -0.42, 0.0, 180);
-            alignToLeft = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
-            alignToRight = new AlignToPoint(m_swerve, -0.42, 0.5, 180);
+            alignToMiddle = new AlignToPoint(m_swerve, -0.53, -0.15, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.53, -0.73, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.53, 0.31, 180);
         } else {
-            alignToMiddle = new AlignToPoint(m_swerve, -0.42, 0, 180);
-            alignToLeft = new AlignToPoint(m_swerve, -0.42, 0.5, 180);
-            alignToRight = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
+            alignToMiddle = new AlignToPoint(m_swerve, -0.53, -0.15, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.42, -0.73, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.42, 0.41, 180);
         }
 
         balanceCommand = new BalanceChargeStation(m_swerve);
@@ -838,22 +839,21 @@ public class RobotContainer {
                 () -> driver.getRawAxis(translationAxis), 
                 () -> driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean(),
-                () -> driver.getRawButton(XboxController.Button.kA.value)
+                () -> robotCentric.getAsBoolean()
             )
         );
         
         
         zeroGyro.onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
         
-        // moveToCenter.onTrue(alignToMiddle);
-        // moveToCenter.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToMiddle)));
+        moveToCenter.onTrue(alignToMiddle);
+        moveToCenter.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToMiddle)));
 
-        // moveToLeft.onTrue(alignToLeft);
-        // moveToLeft.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft)));
+        moveToLeft.onTrue(alignToLeft);
+        moveToLeft.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft)));
 
-        // moveToRight.onTrue(alignToRight);
-        // moveToRight.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToRight)));
+        moveToRight.onTrue(alignToRight);
+        moveToRight.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToRight)));
 
         balance.onTrue(balanceCommand);
         drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(balanceCommand)));

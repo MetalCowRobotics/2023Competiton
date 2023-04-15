@@ -27,10 +27,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private Relay greenLightRelay = new Relay(0);
-
-  private final XboxController driver = new XboxController(0);
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -55,7 +51,6 @@ public class Robot extends TimedRobot {
    TalonSRX m_talon7 = new TalonSRX(7);
    TalonSRX m_talon9 = new TalonSRX(9);
    TalonSRX m_talon10 = new TalonSRX(10);
-   XboxController m_Xbox = new XboxController(0);
 
   @Override
   public void robotPeriodic() {
@@ -99,23 +94,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
 
-    greenLightRelay.set(Relay.Value.kOff);
-
     }
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (driver.getAButton()) {
-      greenLightRelay.set(Relay.Value.kForward);
-
-    }
-
-    if (driver.getBButton()) {
-      greenLightRelay.set(Relay.Value.kOff);
-
-    }
+    
 
   }
 

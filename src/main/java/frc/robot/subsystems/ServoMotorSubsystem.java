@@ -107,6 +107,10 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
         return Units.rotationsToDegrees(encoder.getPosition() / reduction) + initialPosition;
     }
 
+    public void resetEncoder(double angle) {
+        encoder.setPosition(angle);
+    }
+
     public double getTargetAngle() {
         return this.targetAngle;
     }

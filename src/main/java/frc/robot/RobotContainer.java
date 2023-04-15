@@ -185,7 +185,7 @@ public class RobotContainer {
             elbowConfig.kD = 0;
             elbowConfig.positionTolerance = 2;
             elbowConfig.minRPM = 2000;
-            elbowConfig.maxRPM = 3500;
+            elbowConfig.maxRPM = 4500;
             elbowConfig.initialPosition = 0;
             elbowConfig.reduction = 100 * ( (24.0 / 12.0) * (46.0 / 24.0) );
             elbowConfig.subsystemName = "Elbow";
@@ -194,12 +194,12 @@ public class RobotContainer {
             wristConfig.motorCanID = 19;
             wristConfig.stallCurentLimit = 20;
             wristConfig.freeCurentLimit = 30;
-            wristConfig.kP = 0.0002;
+            wristConfig.kP = 0.015;
             wristConfig.kI = 0;
-            wristConfig.kD = 0;
-            wristConfig.positionTolerance = 2;
-            wristConfig.minRPM = 1800;
-            wristConfig.maxRPM = 2000;
+            wristConfig.kD = 0.000;
+            wristConfig.positionTolerance = 4;
+            wristConfig.minRPM = 800;
+            wristConfig.maxRPM = 4000;
             wristConfig.initialPosition = 0;
             wristConfig.reduction = 100 * (24.0 / 12.0);
             wristConfig.subsystemName = "Wrist";

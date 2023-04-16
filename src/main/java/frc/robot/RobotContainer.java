@@ -65,8 +65,8 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton moveToCenter = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton moveToRight = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton moveToRight = new JoystickButton(driver, XboxController.Button.kB.value);
     
     /* Operator Buttons */
     private final JoystickButton cubeSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
@@ -138,6 +138,8 @@ public class RobotContainer {
     private Command twoPieceAutoBlueMidConeLowCube;
     private Command twoPieceAutoBlueMidCubeMidCone;
     private Command twoPieceAutoBluePoofsTest;
+
+    private Command threePiece;
     
     private Command alignToMiddle;
     private Command alignToLeft;
@@ -735,6 +737,7 @@ public class RobotContainer {
         );
 
         twoPieceHighCubeHighCone = new SequentialCommandGroup(
+            new DisableVision(m_swerve),
             new ParallelRaceGroup(
                 new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem, Constants.ArmConstants.HighScoring.SHOULDER_ANGLE, Constants.ArmConstants.HighScoring.ELBOW_ANGLE,Constants.ArmConstants.HighScoring.WRIST_ANGLE),
                 new WaitCommand(armMovementTimeout)
@@ -764,17 +767,23 @@ public class RobotContainer {
                 new ArmToAngles(m_wristSubsystem, m_elbowSubsystem, m_shoulderSubsystem,0, 0, 0),
                 new WaitCommand(0.2)
             ),
-            new DrivePath(m_swerve, "Balance")
+            new EnableVision(m_swerve)
+        );
+
+        threePiece = new SequentialCommandGroup(
+            new DisableVision(m_swerve),
+            new DrivePath(m_swerve, "3 Piece Auto"),
+            new EnableVision(m_swerve)
         );
 
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-            alignToMiddle = new AlignToPoint(m_swerve, -0.42, 0.0, 180);
-            alignToLeft = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
-            alignToRight = new AlignToPoint(m_swerve, -0.42, 0.5, 180);
+            alignToMiddle = new AlignToPoint(m_swerve, -0.53, -0.15, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.53, 0.48, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.53, -0.7, 180);
         } else {
-            alignToMiddle = new AlignToPoint(m_swerve, -0.42, 0, 180);
-            alignToLeft = new AlignToPoint(m_swerve, -0.42, 0.5, 180);
-            alignToRight = new AlignToPoint(m_swerve, -0.42, -0.5, 180);
+            alignToMiddle = new AlignToPoint(m_swerve, -0.53, -0.15, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.53, -0.7, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.53, 0.48, 180);
         }
 
         balanceCommand = new BalanceChargeStation(m_swerve);
@@ -799,6 +808,7 @@ public class RobotContainer {
         m_autoSelector.addOption("Blue Two Piece Mid Cone Low Cube IN TESTING", twoPieceAutoBlueMidConeLowCube);
         m_autoSelector.addOption("Blue Two Piece Poofs TEST", twoPieceAutoBluePoofsTest);
         m_autoSelector.addOption("arm test", armTest);
+        m_autoSelector.addOption("three piece", threePiece);
         // m_autoSelector.setDefaultOption("None", noAuto);
         SmartDashboard.putData(m_autoSelector);
     }
@@ -838,22 +848,21 @@ public class RobotContainer {
                 () -> driver.getRawAxis(translationAxis), 
                 () -> driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean(),
-                () -> driver.getRawButton(XboxController.Button.kA.value)
+                () -> robotCentric.getAsBoolean()
             )
         );
         
         
         zeroGyro.onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
         
-        // moveToCenter.onTrue(alignToMiddle);
-        // moveToCenter.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToMiddle)));
+        moveToCenter.onTrue(alignToMiddle);
+        moveToCenter.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToMiddle)));
 
-        // moveToLeft.onTrue(alignToLeft);
-        // moveToLeft.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft)));
+        moveToLeft.onTrue(alignToLeft);
+        moveToLeft.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToLeft)));
 
-        // moveToRight.onTrue(alignToRight);
-        // moveToRight.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToRight)));
+        moveToRight.onTrue(alignToRight);
+        moveToRight.onFalse(new InstantCommand(() -> CommandScheduler.getInstance().cancel(alignToRight)));
 
         balance.onTrue(balanceCommand);
         drive.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancel(balanceCommand)));

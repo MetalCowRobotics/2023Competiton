@@ -185,17 +185,17 @@ public final class Constants {
         public static final class SubstationCone {
             public static final double SHOULDER_ANGLE = 58.09;
             public static final double ELBOW_ANGLE = 66.3;
-            public static final double WRIST_ANGLE = 122;
+            public static final double WRIST_ANGLE = 124;
         }
         public static final class SubstationCube {
             public static final double SHOULDER_ANGLE = 70;
-            public static final double ELBOW_ANGLE = 63;
+            public static final double ELBOW_ANGLE = 61;
             public static final double WRIST_ANGLE = 119;
         }
         public static final class GroundCone {
             public static final double SHOULDER_ANGLE = 96.2;
-            public static final double ELBOW_ANGLE = -51;
-            public static final double WRIST_ANGLE = -10;
+            public static final double ELBOW_ANGLE = -49;
+            public static final double WRIST_ANGLE = -5;
         }
         public static final class GroundCube {
             public static final double SHOULDER_ANGLE = 102;

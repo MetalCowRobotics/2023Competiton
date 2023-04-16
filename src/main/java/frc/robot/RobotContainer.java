@@ -65,8 +65,8 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton moveToCenter = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton moveToRight = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton moveToLeft = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton moveToRight = new JoystickButton(driver, XboxController.Button.kB.value);
     
     /* Operator Buttons */
     private final JoystickButton cubeSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
@@ -138,6 +138,8 @@ public class RobotContainer {
     private Command twoPieceAutoBlueMidConeLowCube;
     private Command twoPieceAutoBlueMidCubeMidCone;
     private Command twoPieceAutoBluePoofsTest;
+
+    private Command threePiece;
     
     private Command alignToMiddle;
     private Command alignToLeft;
@@ -768,14 +770,20 @@ public class RobotContainer {
             new EnableVision(m_swerve)
         );
 
+        threePiece = new SequentialCommandGroup(
+            new DisableVision(m_swerve),
+            new DrivePath(m_swerve, "3 Piece Auto"),
+            new EnableVision(m_swerve)
+        );
+
         if (DriverStation.getAlliance().equals(Alliance.Blue)) {
             alignToMiddle = new AlignToPoint(m_swerve, -0.53, -0.15, 180);
-            alignToLeft = new AlignToPoint(m_swerve, -0.53, -0.73, 180);
-            alignToRight = new AlignToPoint(m_swerve, -0.53, 0.31, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.53, 0.48, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.53, -0.7, 180);
         } else {
             alignToMiddle = new AlignToPoint(m_swerve, -0.53, -0.15, 180);
-            alignToLeft = new AlignToPoint(m_swerve, -0.42, -0.73, 180);
-            alignToRight = new AlignToPoint(m_swerve, -0.42, 0.41, 180);
+            alignToLeft = new AlignToPoint(m_swerve, -0.53, -0.7, 180);
+            alignToRight = new AlignToPoint(m_swerve, -0.53, 0.48, 180);
         }
 
         balanceCommand = new BalanceChargeStation(m_swerve);
@@ -800,6 +808,7 @@ public class RobotContainer {
         m_autoSelector.addOption("Blue Two Piece Mid Cone Low Cube IN TESTING", twoPieceAutoBlueMidConeLowCube);
         m_autoSelector.addOption("Blue Two Piece Poofs TEST", twoPieceAutoBluePoofsTest);
         m_autoSelector.addOption("arm test", armTest);
+        m_autoSelector.addOption("three piece", threePiece);
         // m_autoSelector.setDefaultOption("None", noAuto);
         SmartDashboard.putData(m_autoSelector);
     }

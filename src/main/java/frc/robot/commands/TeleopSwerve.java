@@ -33,14 +33,13 @@ public class TeleopSwerve extends CommandBase {
     private BooleanSupplier alignToGrid;
     private PIDController angleController = new PIDController(0.04, 0, 0);
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier alignToGrid) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
         this.s_Swerve = s_Swerve;
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
-        this.alignToGrid = alignToGrid;
 
         angleController.enableContinuousInput(0, 360);
         angleController.setTolerance(2);
@@ -62,16 +61,10 @@ public class TeleopSwerve extends CommandBase {
 
         SmartDashboard.putNumber("tracked x", x);
         SmartDashboard.putNumber("tracked y", y);
-        SmartDashboard.putBoolean("aligning", alignToGrid.getAsBoolean());
 
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(-rotationSup.getAsDouble(), Constants.stickDeadband);
-
-        if (alignToGrid.getAsBoolean()) {
-            rotationVal = angleController.calculate(yaw);
-            SmartDashboard.putNumber("rotation correction", rotationVal);
-        }
 
         /* Drive */
         s_Swerve.drive(

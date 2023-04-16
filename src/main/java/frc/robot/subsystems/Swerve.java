@@ -86,7 +86,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setCrawl() {
-        speedMultiplier = 0.11;
+        speedMultiplier = 0.5;
     }
 
     public void setSprint() {
@@ -214,43 +214,56 @@ public class Swerve extends SubsystemBase {
     private void addVisionMeasurement() {
         PhotonPipelineResult result = camera.getLatestResult();
         PhotonTrackedTarget target = result.getBestTarget();
-        SmartDashboard.putBoolean("has targets", result.hasTargets());
-        // if (null != target) {
+        
+        if (null != target) {
             double time = result.getTimestampSeconds();
             Transform3d targetPose = target.getBestCameraToTarget();
-            Translation2d xyPosition = new Translation2d(targetPose.getX(), targetPose.getY());
+            double photonX = targetPose.getX();
+            double photonY = targetPose.getY();
 
-            double yaw = getYaw().getDegrees();
-            yaw = yaw % 360;
+            double yaw = getYaw().getDegrees() % 360;
             if (yaw < 0) {
                 yaw += 360;
             }
-            SmartDashboard.putNumber("yaw for vision", yaw);
 
-            Rotation2d correction = Rotation2d.fromDegrees(yaw);
-            Translation2d cameraPose = new Translation2d(Units.inchesToMeters(8), -Units.inchesToMeters(7.75));
-            cameraPose = cameraPose.rotateBy(correction);
+            double photonXAngle = yaw - 180;
+            double photonYAngle = yaw + 90 - 180;
 
-            SmartDashboard.putNumber("robot center x", cameraPose.getX());
-            SmartDashboard.putNumber("robot center y", cameraPose.getY());
-            
-            double xHeading = Math.toRadians(180 + yaw);
-            double yHeading = Math.toRadians(270 + yaw);
+            Translation2d photonXVector = new Translation2d(
+                photonX * Math.cos(Math.toRadians(photonXAngle)),
+                photonX * Math.sin(Math.toRadians(photonXAngle))
+            );
 
-            Pose2d pose = new Pose2d(-(xyPosition.getX() * Math.cos(xHeading) + xyPosition.getY() * Math.cos(yHeading)), -(xyPosition.getX() * Math.sin(xHeading) + xyPosition.getY() * Math.sin(yHeading)), getYaw());
+            Translation2d photonYVector = new Translation2d(
+                photonY * Math.cos(Math.toRadians(photonYAngle)),
+                photonY * Math.sin(Math.toRadians(photonYAngle))
+            );
+
+            Translation2d apriltagPosition = photonXVector.plus(photonYVector);
+
+            Translation2d robotPosition = apriltagPosition.times(-1.0);
+
+            Pose2d robotPose = new Pose2d(
+                robotPosition,
+                getYaw()
+            );
 
             if (lastTrackedTarget != target.getFiducialId()) {
-                if (Math.hypot(pose.getX(), pose.getY()) < ODOMETRY_RESET_DISTANCE_THRESHOLD) {
-                    resetOdometry(pose);
-                    lastTrackedTarget = target.getFiducialId();
-                }
+                resetOdometry(robotPose);
             }
+            estimator.addVisionMeasurement(robotPose, time);
             
-            lastObservedTime = Timer.getFPGATimestamp();
-            // lastTrackedTarget = target.getFiducialId();
+            lastTrackedTarget = target.getFiducialId();
 
-            SmartDashboard.putNumber("x from vision", pose.getX());
-            SmartDashboard.putNumber("y from vision", pose.getY());
+            SmartDashboard.putNumber("vision x", robotPose.getX());
+            SmartDashboard.putNumber("vision y", robotPose.getY());
+
+        } else {
+            lastTrackedTarget = -1;
+        }
+
+        SmartDashboard.putBoolean("has targets", result.hasTargets());
+        SmartDashboard.putNumber("last tracked target", lastTrackedTarget);
     }
 
     @Override
@@ -258,11 +271,7 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getYaw(), getModulePositions());
         estimator.update(getYaw(), getModulePositions());
         if (visionEnabled) {
-            try {
-                // addVisionMeasurement();
-            } catch (Exception e) {
-                lastTrackedTarget = -1;
-            }
+            addVisionMeasurement();
         }
         SmartDashboard.putBoolean("vision enabled", visionEnabled);
 

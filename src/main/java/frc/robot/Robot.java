@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.*;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
@@ -74,9 +73,15 @@ public class Robot extends TimedRobot {
       
     }
 
-    // Link to the Analog UltraSonicSensor Class. Find the method to return distance and impliment it.
+    // Link to the Analog UltraSonicSensor Class.
     // https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/AnalogPotentiometer.html#method.summary
-    // Similar work of creating an object like the infrared sensor. 
+    // Similar work of creating an object like the infrared sensor.
+    // I've already imported the class. Find the method to return distance and impliment it.
+
+    // Link to the XboxController Class.
+    // https://first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/wpilibj/XboxController.html
+    // Same old process. Play around with the different methods.
+    // I haven't imported it, so try it yourself via the doc or through quickfix.
 
   }
 

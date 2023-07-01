@@ -1,16 +1,18 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.*;
-import com.ctre.phoenix.motorcontrol.*;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
+
+  DigitalInput garageSensor = new DigitalInput(0);
+  TalonSRX motor1 = new TalonSRX(11);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -29,7 +31,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once at the start of Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+
+  }
 
   /** This function is called periodically during Disable mode. */
   @Override
@@ -58,6 +62,21 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    if(garageSensor.get() == true) {
+      SmartDashboard.putString("Title", "True");
+      motor1.set(TalonSRXControlMode.PercentOutput, 0.3);
+
+    }
+    else {
+      SmartDashboard.putString("Title", "False");
+      motor1.set(TalonSRXControlMode.PercentOutput, 0);
+      
+    }
+
+    // Link to the Analog UltraSonicSensor Class. Find the method to return distance and impliment it.
+    // https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/AnalogPotentiometer.html#method.summary
+    // Similar work of creating an object like the infrared sensor. 
 
   }
 

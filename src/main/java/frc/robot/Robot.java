@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.XboxController;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -12,6 +13,8 @@ public class Robot extends TimedRobot {
 
   DigitalInput garageSensor = new DigitalInput(0);
   TalonSRX motor1 = new TalonSRX(11);
+  AnalogPotentiometer ultraSonic = new AnalogPotentiometer(0);
+  XboxController xbox = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -62,26 +65,32 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if(garageSensor.get() == true) {
-      SmartDashboard.putString("Title", "True");
-      motor1.set(TalonSRXControlMode.PercentOutput, 0.3);
+    SmartDashboard.putNumber("UltraSonic Sensor", ultraSonic.get());
+    SmartDashboard.putBoolean("IR Sensor", garageSensor.get());
 
+    if (xbox.getAButton() == true) {
+      SmartDashboard.putString("Motor Status", "Running");
+      motor1.set(TalonSRXControlMode.PercentOutput, 0.3);
     }
     else {
-      SmartDashboard.putString("Title", "False");
+      SmartDashboard.putString("Motor Status", "Stopped");
       motor1.set(TalonSRXControlMode.PercentOutput, 0);
-      
     }
+
+    // if (garageSensor.get() == true) {
+    //   SmartDashboard.putString("Title", "True");
+    //   motor1.set(TalonSRXControlMode.PercentOutput, 0.3);
+    // }
+    // else {
+    //   SmartDashboard.putString("Title", "False");
+    //   motor1.set(TalonSRXControlMode.PercentOutput, 0); 
+    // }
 
     // Link to the Analog UltraSonicSensor Class.
     // https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/AnalogPotentiometer.html#method.summary
-    // Similar work of creating an object like the infrared sensor.
-    // I've already imported the class. Find the method to return distance and impliment it.
 
     // Link to the XboxController Class.
     // https://first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/wpilibj/XboxController.html
-    // Same old process. Play around with the different methods.
-    // I haven't imported it, so try it yourself via the doc or through quickfix.
 
   }
 

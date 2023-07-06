@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
   DigitalInput garageSensor = new DigitalInput(0);
-  TalonSRX motor1 = new TalonSRX(11);
   AnalogPotentiometer ultraSonic = new AnalogPotentiometer(0);
   XboxController xbox = new XboxController(0);
+  // TalonSRX motor1 = new TalonSRX(11);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -70,11 +70,15 @@ public class Robot extends TimedRobot {
 
     if (xbox.getAButton() == true) {
       SmartDashboard.putString("Motor Status", "Running");
-      motor1.set(TalonSRXControlMode.PercentOutput, 0.3);
+
+
+      // motor1.set(TalonSRXControlMode.PercentOutput, 0.3);
     }
     else {
       SmartDashboard.putString("Motor Status", "Stopped");
-      motor1.set(TalonSRXControlMode.PercentOutput, 0);
+
+
+      // motor1.set(TalonSRXControlMode.PercentOutput, 0);
     }
 
     // if (garageSensor.get() == true) {

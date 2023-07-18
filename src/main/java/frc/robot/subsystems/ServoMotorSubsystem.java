@@ -6,16 +6,12 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class ServoMotorSubsystem extends SubsystemBase {
     private CANSparkMax m_motor;
     private RelativeEncoder encoder;
-    private PowerDistribution pdp;
 
     private PIDController m_pidController;
 
@@ -34,7 +30,6 @@ public abstract class ServoMotorSubsystem extends SubsystemBase {
 
     private String subsystemName;
 
-    private boolean inverted;
     public static class ServoMotorSubsystemConfig {
         public double nominalVoltage = 12.6;
         public double rampTime = 0.125;

@@ -15,8 +15,6 @@ public class ArmToAngles extends CommandBase {
     private double elbowAngle;
     private double shoulderAngle;
 
-    private double angle;
-
     public ArmToAngles(WristSubsystem wrist, ElbowSubsystem elbow, ShoulderSubsystem shoulder, double shoulderAngle, double elbowAngle, double wristAngle) {
         this.m_wrist = wrist;
         this.m_elbow = elbow;

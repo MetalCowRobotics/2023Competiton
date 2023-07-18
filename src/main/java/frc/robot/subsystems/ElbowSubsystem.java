@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import frc.robot.Constants;
 
 public class ElbowSubsystem extends ServoMotorSubsystem {
 

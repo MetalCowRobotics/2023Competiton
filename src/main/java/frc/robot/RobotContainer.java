@@ -823,23 +823,6 @@ public class RobotContainer {
         stopIntakeOnPickup.onTrue(
             new InstantCommand(() -> m_IntakeSubsystem.stop())
         );
-// test this bit once the rest works
-        // stopIntakeOnPickup.onTrue(
-        //     new SequentialCommandGroup(
-        //         new InstantCommand(
-        //             () -> m_shoulderSubsystem.setTarget(0)
-        //         ),
-        //         new InstantCommand(
-        //             () -> m_elbowSubsystem.setTarget(0)
-        //         ), 
-        //         new InstantCommand(
-        //             () -> m_wristSubsystem.setTarget(-5.22)
-        //         ), 
-        //         new InstantCommand(
-        //             () -> m_IntakeSubsystem.stop()
-        //         )
-        //     )
-        // );
 
         /* Driver Buttons */
         m_swerve.setDefaultCommand(
@@ -851,7 +834,6 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
-        
         
         zeroGyro.onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
         

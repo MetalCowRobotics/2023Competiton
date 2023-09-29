@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -68,14 +69,14 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    CommandScheduler.getInstance().cancelAll();
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // CommandScheduler.getInstance().cancelAll();
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
-      // m_autonomousCommand.schedule();
-    }
+    // // schedule the autonomous command (example)
+    // if (m_autonomousCommand != null) {
+    //   CommandScheduler.getInstance().schedule(m_autonomousCommand);
+    //   // m_autonomousCommand.schedule();
+    // }
   }
 
   /** This function is called periodically during autonomous. */
@@ -94,11 +95,12 @@ public class Robot extends TimedRobot {
     }
     m_robotContainer.configureButtonBindings();
   }
-
+  AnalogPotentiometer pot = new AnalogPotentiometer(3);
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     SmartDashboard.putNumber("shoulder current", pdp.getCurrent(12));
+    SmartDashboard.putNumber("potentiometer reading: ", pot.get());
   }
 
   @Override

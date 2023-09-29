@@ -57,8 +57,8 @@ public class RobotContainer {
     private final JoystickButton autoLevel = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     
     /* Operator Buttons */
-    private final JoystickButton cubeSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton coneSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    private final JoystickButton cubeSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    private final JoystickButton coneSubstationIntakePosition = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
     // private final JoystickButton cubeFloorIntakePosition = new JoystickButton(operator, XboxController.Axis.kLeftY);
     // private final JoystickButton coneFloorIntakePosition = new JoystickButton(operator, XboxController.Button.kX.value);
     private final JoystickButton lowScoringPosition = new JoystickButton(operator, XboxController.Button.kB.value);

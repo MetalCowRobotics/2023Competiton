@@ -86,7 +86,7 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 3.3; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 1; //TODO: This must be tuned to specific robot
         public static final double maxAutoSpeed = 1.5;
         /** Radians per Second */
         public static final double maxAngularVelocity = (3 * Math.PI) / 2; //TODO: This must be tuned to specific robot
@@ -163,19 +163,19 @@ public final class Constants {
 
     public static final class ArmConstants {
         public static final class SubstationCone {
-            public static final double SHOULDER_ANGLE = 58.09;
-            public static final double ELBOW_ANGLE =66.3;
-            public static final double WRIST_ANGLE = 107;
+            public static final double SHOULDER_ANGLE = 6;
+            public static final double ELBOW_ANGLE = 14.50;
+            public static final double WRIST_ANGLE = 45;
         }
         public static final class SubstationCube {
-            public static final double SHOULDER_ANGLE = 46.3;
-            public static final double ELBOW_ANGLE = 42;
-            public static final double WRIST_ANGLE = 65;
+            public static final double SHOULDER_ANGLE = 40;
+            public static final double ELBOW_ANGLE = 50;
+            public static final double WRIST_ANGLE = 90;
         }
         public static final class GroundCone {
-            public static final double SHOULDER_ANGLE = 96.2;
+            public static final double SHOULDER_ANGLE = 103;
             public static final double ELBOW_ANGLE = -50;
-            public static final double WRIST_ANGLE = -9;
+            public static final double WRIST_ANGLE = -23;
         }
         public static final class GroundCube {
             public static final double SHOULDER_ANGLE = 102;
@@ -183,9 +183,9 @@ public final class Constants {
             public static final double WRIST_ANGLE = -4;
         }
         public static final class MidScoring {
-            public static final double SHOULDER_ANGLE = 64;
-            public static final double ELBOW_ANGLE = 43;
-            public static final double WRIST_ANGLE = 90;
+            public static final double SHOULDER_ANGLE = 63;
+            public static final double ELBOW_ANGLE = 36;
+            public static final double WRIST_ANGLE = 70;
         }
         public static final class LowScoring {
             public static final double SHOULDER_ANGLE = 0;

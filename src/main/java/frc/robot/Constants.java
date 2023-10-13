@@ -159,8 +159,10 @@ public final class Constants {
         public static Boolean intakeRunning = false;
         public static final JoystickButton CONT_INTAKE_RUN = new JoystickButton(operatorControls, XboxController.Button.kRightBumper.value);
         public static final JoystickButton CONT_INTAKE_RUN_REV = new JoystickButton(operatorControls, XboxController.Button.kLeftBumper.value);
-        public static final int CONE_SENSOR_DIO = 0;
-        public static final int CUBE_SENSOR_DIO = 1;
+
+        public static final int CONE_SENSOR_DIO = 1;
+        public static final int CUBE_SENSOR_DIO = 0;
+
     }
 
     public static final class ArmConstants {
@@ -183,19 +185,21 @@ public final class Constants {
             public static final double WRIST_POT_OFFSET = 1706+47;
         } 
         public static final class SubstationCone {
-            public static final double SHOULDER_ANGLE = 58.09;
-            public static final double ELBOW_ANGLE = 66.3;
-            public static final double WRIST_ANGLE = 124;
+
+            public static final double SHOULDER_ANGLE = 6;
+            public static final double ELBOW_ANGLE = 14.50;
+            public static final double WRIST_ANGLE = 45;
         }
         public static final class SubstationCube {
-            public static final double SHOULDER_ANGLE = 70;
-            public static final double ELBOW_ANGLE = 61;
-            public static final double WRIST_ANGLE = 119;
+            public static final double SHOULDER_ANGLE = 40;
+            public static final double ELBOW_ANGLE = 50;
+            public static final double WRIST_ANGLE = 90;
         }
         public static final class GroundCone {
-            public static final double SHOULDER_ANGLE = 96.2;
-            public static final double ELBOW_ANGLE = -49;
-            public static final double WRIST_ANGLE = -5;
+            public static final double SHOULDER_ANGLE = 103;
+            public static final double ELBOW_ANGLE = -50;
+            public static final double WRIST_ANGLE = -23;
+
         }
         public static final class GroundCube {
             public static final double SHOULDER_ANGLE = 102;
@@ -205,7 +209,9 @@ public final class Constants {
         public static final class MidScoring {
             public static final double SHOULDER_ANGLE = 63;
             public static final double ELBOW_ANGLE = 36;
-            public static final double WRIST_ANGLE = 93;
+
+            public static final double WRIST_ANGLE = 70;
+
         }
         public static final class LowScoring {
             public static final double SHOULDER_ANGLE = 0;

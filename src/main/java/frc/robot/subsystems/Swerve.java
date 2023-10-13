@@ -14,6 +14,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,7 +37,6 @@ public class Swerve extends SubsystemBase {
     
     private PhotonCamera camera;
     private double accelerationTime = 0.6;
-    private int i = 0;
     private final double ODOMETRY_RESET_DISTANCE_THRESHOLD = 2.5;
     private final double ODOMETRY_RESET_TIME_THRESHOLD = 15;
     private double lastObservedTime = -2 * ODOMETRY_RESET_TIME_THRESHOLD;
@@ -51,6 +51,9 @@ public class Swerve extends SubsystemBase {
     private int lastTrackedTarget = -1;
 
     private double speedMultiplier = 1;
+
+    private double lastHeading = 0;
+    private PIDController angleHoldingPIDController = new PIDController(0.0004, 0, 0);
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
@@ -68,6 +71,9 @@ public class Swerve extends SubsystemBase {
         estimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(0, 0, getYaw()));
 
         camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+
+        angleHoldingPIDController.setTolerance(2);
+        angleHoldingPIDController.enableContinuousInput(-180, 180);
         
     }
 
@@ -95,7 +101,16 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("multiplier", speedMultiplier);
         double xSpeed = m_xSlewRateLimiter.calculate(translation.getX() * speedMultiplier);
         double ySpeed = m_ySlewRateLimiter.calculate(translation.getY() * speedMultiplier);
-        double angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
+        double angularVelocity;
+        if (rotation == 0) {
+            angularVelocity = angleHoldingPIDController.calculate(getYaw().getDegrees());
+            angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
+        } else {
+            angularVelocity = m_angleSlewRateLimiter.calculate(rotation);
+            angleHoldingPIDController.setSetpoint(getYaw().getDegrees());
+        }
+        
+        
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -121,6 +136,7 @@ public class Swerve extends SubsystemBase {
         double xSpeed = translation.getX();
         double ySpeed = translation.getY();
         double angularVelocity = rotation;
+        angleHoldingPIDController.setSetpoint(getYaw().getDegrees());
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -135,7 +151,7 @@ public class Swerve extends SubsystemBase {
                                     angularVelocity
                                 )
                                 );
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed * speedMultiplier);
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -144,7 +160,7 @@ public class Swerve extends SubsystemBase {
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed * speedMultiplier);
         
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
@@ -188,57 +204,66 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getRoll() {
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getRoll()) : Rotation2d.fromDegrees(gyro.getYaw());
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getRoll()) : Rotation2d.fromDegrees(gyro.getRoll());
+    }
+
+    public Rotation2d getBalanceAngle() {
+        return Rotation2d.fromDegrees(360 - gyro.getRoll());
     }
 
     private void addVisionMeasurement() {
         PhotonPipelineResult result = camera.getLatestResult();
         PhotonTrackedTarget target = result.getBestTarget();
-        SmartDashboard.putBoolean("has targets", result.hasTargets());
-        // if (null != target) {
+        
+        if (null != target) {
             double time = result.getTimestampSeconds();
             Transform3d targetPose = target.getBestCameraToTarget();
-            Translation2d xyPosition = new Translation2d(targetPose.getX(), targetPose.getY());
+            double photonX = targetPose.getX();
+            double photonY = targetPose.getY();
 
-            double yaw = getYaw().getDegrees();
-            yaw = yaw % 360;
+            double yaw = getYaw().getDegrees() % 360;
             if (yaw < 0) {
                 yaw += 360;
             }
-            double correctionAngle = 0;
-            if (yaw <= 90) {
-                correctionAngle = 90 - yaw;
-            } else if (yaw <= 180) {
-                correctionAngle = 180 - yaw;
-            } else if (yaw <= 270) {
-                correctionAngle = 270 - yaw;
-            } else if (yaw <= 360) {
-                correctionAngle = 360 - yaw; // 360 - yaw + 90
-            }
 
-            Rotation2d correction = Rotation2d.fromDegrees(-correctionAngle);
-            xyPosition = xyPosition.rotateBy(correction);
-            
-            // if (yaw < 180) {
-            //     xyPosition = new Translation2d(xyPosition.getY(), xyPosition.getX());
-            // }
-            Pose2d pose = new Pose2d(xyPosition.getY() + Units.inchesToMeters(10.5), -xyPosition.getX() - Units.inchesToMeters(4.25), getYaw());
-            estimator.addVisionMeasurement(pose, time);
+            double photonXAngle = yaw - 180;
+            double photonYAngle = yaw + 90 - 180;
+
+            Translation2d photonXVector = new Translation2d(
+                photonX * Math.cos(Math.toRadians(photonXAngle)),
+                photonX * Math.sin(Math.toRadians(photonXAngle))
+            );
+
+            Translation2d photonYVector = new Translation2d(
+                photonY * Math.cos(Math.toRadians(photonYAngle)),
+                photonY * Math.sin(Math.toRadians(photonYAngle))
+            );
+
+            Translation2d apriltagPosition = photonXVector.plus(photonYVector);
+
+            Translation2d robotPosition = apriltagPosition.times(-1.0);
+
+            Pose2d robotPose = new Pose2d(
+                robotPosition,
+                getYaw()
+            );
+
             if (lastTrackedTarget != target.getFiducialId()) {
-                if (Math.hypot(pose.getX(), pose.getY()) < ODOMETRY_RESET_DISTANCE_THRESHOLD) {
-                    resetOdometry(pose);
-                }
+                resetOdometry(robotPose);
             }
-            // if (lastObservedTime - Timer.getFPGATimestamp() > ODOMETRY_RESET_TIME_THRESHOLD) {
-            //     resetOdometry(pose);
-            // }
-            lastObservedTime = Timer.getFPGATimestamp();
+            estimator.addVisionMeasurement(robotPose, time);
+            
             lastTrackedTarget = target.getFiducialId();
-            SmartDashboard.putNumber("x from vision", pose.getX());
-            SmartDashboard.putNumber("y from vision", pose.getY());
-        // }
-        // SmartDashboard.putNumber("x from vision", -99);
-        // SmartDashboard.putNumber("y from vision", -99);
+
+            SmartDashboard.putNumber("vision x", robotPose.getX());
+            SmartDashboard.putNumber("vision y", robotPose.getY());
+
+        } else {
+            lastTrackedTarget = -1;
+        }
+
+        SmartDashboard.putBoolean("has targets", result.hasTargets());
+        SmartDashboard.putNumber("last tracked target", lastTrackedTarget);
     }
 
     @Override
@@ -246,13 +271,7 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getYaw(), getModulePositions());
         estimator.update(getYaw(), getModulePositions());
         if (visionEnabled) {
-            SmartDashboard.putNumber("vision count", i);
-            i++;
-            try {
-                addVisionMeasurement();
-            } catch (Exception e) {
-                
-            }
+            addVisionMeasurement();
         }
         SmartDashboard.putBoolean("vision enabled", visionEnabled);
 
@@ -266,5 +285,6 @@ public class Swerve extends SubsystemBase {
         Pose2d pose = swerveOdometry.getPoseMeters();
         SmartDashboard.putNumber("x from odometry", pose.getX());
         SmartDashboard.putNumber("y from odometry", pose.getY());
+        SmartDashboard.putNumber("charge station angle", getBalanceAngle().getDegrees());
     }
 }

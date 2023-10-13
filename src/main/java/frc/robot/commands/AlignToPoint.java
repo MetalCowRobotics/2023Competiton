@@ -101,4 +101,14 @@ public class AlignToPoint extends CommandBase {
         return false;
     }
 
+    @Override
+    public void end(boolean interrupted) {
+        m_swerve.drive(
+            new Translation2d(0, 0).times(Constants.Swerve.maxSpeed), 
+            0 * Constants.Swerve.maxAngularVelocity, 
+            true, 
+            false
+        );
+    }
+
 }

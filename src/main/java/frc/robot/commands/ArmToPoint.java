@@ -5,7 +5,6 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ElbowSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
-import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.ArmPathPlanner;
 import frc.robot.util.Point;
 

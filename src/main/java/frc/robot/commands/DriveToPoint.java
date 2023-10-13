@@ -4,7 +4,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
@@ -20,15 +19,15 @@ public class DriveToPoint extends CommandBase {
     private double targetAngle;
 
     private PIDController anglePIDController = new PIDController(0.04, 0, 0.001);
-    private PIDController xController = new PIDController(0.6, 0, 0);
-    private PIDController yController = new PIDController(0.6, 0, 0);
+    private PIDController xController = new PIDController(0.5, 0, 0);
+    private PIDController yController = new PIDController(0.7, 0, 0);
 
     public DriveToPoint(Swerve swerve, double x, double y, double theta) {
         this.m_swerve = swerve;
         addRequirements(m_swerve);
 
         anglePIDController.setSetpoint(0);
-        anglePIDController.setTolerance(6);
+        anglePIDController.setTolerance(2);
 
         this.targetX = x;
         this.targetY = y;

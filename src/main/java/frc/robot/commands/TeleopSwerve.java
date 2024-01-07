@@ -8,10 +8,9 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class TeleopSwerve extends CommandBase {    
+public class TeleopSwerve {    
     private Swerve s_Swerve;    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
@@ -20,7 +19,6 @@ public class TeleopSwerve extends CommandBase {
 
     public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
         this.s_Swerve = s_Swerve;
-        addRequirements(s_Swerve);
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
@@ -28,7 +26,6 @@ public class TeleopSwerve extends CommandBase {
         this.robotCentricSup = robotCentricSup;
     }
 
-    @Override
     public void execute() {
         /* Get Values, Deadband*/
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);

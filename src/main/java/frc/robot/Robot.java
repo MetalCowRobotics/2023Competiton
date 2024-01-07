@@ -5,11 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import com.ctre.phoenix.motorcontrol.can.*;
-import com.ctre.phoenix.motorcontrol.*;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.TeleopSwerve;
+
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -20,9 +20,28 @@ import edu.wpi.first.wpilibj.XboxController;
 public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
 
-  private Command m_autonomousCommand;
+  /* Controllers */
+  private final XboxController driver = new XboxController(0);
 
-  private RobotContainer m_robotContainer;
+  /* Drive Controls */
+  private final int translationAxis = XboxController.Axis.kLeftY.value;
+  private final int strafeAxis = XboxController.Axis.kLeftX.value;
+  private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+  /* Driver Buttons */
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+
+  /* Subsystems */
+  private final Swerve s_Swerve = new Swerve();
+
+  private TeleopSwerve m_TeleopSwerve = new TeleopSwerve(
+      s_Swerve, 
+      () -> -driver.getRawAxis(translationAxis), 
+      () -> -driver.getRawAxis(strafeAxis), 
+      () -> -driver.getRawAxis(rotationAxis), 
+      () -> robotCentric.getAsBoolean()
+  );
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -31,9 +50,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     ctreConfigs = new CTREConfigs();
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -43,12 +59,6 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
-
-   TalonSRX m_talon12 = new TalonSRX(12);
-   TalonSRX m_talon7 = new TalonSRX(7);
-   TalonSRX m_talon9 = new TalonSRX(9);
-   TalonSRX m_talon10 = new TalonSRX(10);
-   XboxController m_Xbox = new XboxController(0);
 
   @Override
   public void robotPeriodic() {
@@ -68,16 +78,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {}
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
+  public void autonomousInit() {}
 
   /** This function is called periodically during autonomous. */
   @Override
@@ -85,32 +87,27 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    configureButtonBindings();
+    m_TeleopSwerve.execute();
+
+  }
 
   @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-
-    // CommandScheduler.getInstance().cancelAll();
-    
-    m_talon12.set(ControlMode.PercentOutput, -(m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
-    m_talon7.set(ControlMode.PercentOutput, -(m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
-    m_talon9.set(ControlMode.PercentOutput, (m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
-    m_talon10.set(ControlMode.PercentOutput, (m_Xbox.getLeftY()*0.5) + m_Xbox.getRightX()*0.5);
-  }
+  public void testInit() {}
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  private void configureButtonBindings() {
+    if (zeroGyro.getAsBoolean() == true) {
+      s_Swerve.zeroGyro();
+    }
+  }
 }
